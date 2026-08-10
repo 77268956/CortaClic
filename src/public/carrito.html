@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tu carrito de compras en CortaClic.">
+  <title>Mi Carrito – CortaClic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <div class="page-hero">
+      <p class="page-hero__tag"><i class="bi bi-bag mr-1"></i>Compras</p>
+      <h1 class="page-hero__title">Mi Carrito</h1>
+      <p class="page-hero__sub">Revisa tus productos antes de pagar.</p>
+    </div>
+
+    <!-- Cart Items -->
+    <div id="cart-items">
+
+      <div class="cart-item">
+        <div class="cart-item__img g2">🫙</div>
+        <div class="cart-item__info">
+          <div class="cart-item__name">Pomada Matt Effect</div>
+          <div class="cart-item__qty">Cantidad: 2</div>
+        </div>
+        <div class="cart-item__price">$360</div>
+        <button class="btn-danger-ghost ml-2" style="padding:7px 10px; border-radius:var(--r-md);">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+
+      <div class="cart-item">
+        <div class="cart-item__img g5">💧</div>
+        <div class="cart-item__info">
+          <div class="cart-item__name">Aceite de Barba Premium</div>
+          <div class="cart-item__qty">Cantidad: 1</div>
+        </div>
+        <div class="cart-item__price">$220</div>
+        <button class="btn-danger-ghost ml-2" style="padding:7px 10px; border-radius:var(--r-md);">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+
+      <div class="cart-item">
+        <div class="cart-item__img g8">🧴</div>
+        <div class="cart-item__info">
+          <div class="cart-item__name">Shampoo Anticaída</div>
+          <div class="cart-item__qty">Cantidad: 1</div>
+        </div>
+        <div class="cart-item__price">$250</div>
+        <button class="btn-danger-ghost ml-2" style="padding:7px 10px; border-radius:var(--r-md);">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+
+    </div><!-- /cart-items -->
+
+    <!-- Empty State (hidden) -->
+    <div class="empty-state d-none" id="empty-cart">
+      <i class="bi bi-bag-x d-block"></i>
+      <h3>Tu carrito está vacío</h3>
+      <p>Agrega productos desde la tienda para comenzar.</p>
+      <a href="/tienda" class="btn-accent"><i class="bi bi-shop"></i> Ir a la Tienda</a>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="booking-card mt-3" id="order-summary">
+      <div class="booking-card__title">
+        <i class="bi bi-receipt"></i> Resumen de Pedido
+      </div>
+      <div class="d-flex justify-content-between mb-2" style="font-size:.9rem; color:var(--text-2);">
+        <span>Subtotal (4 productos)</span>
+        <span>$830 MXN</span>
+      </div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:.9rem; color:var(--text-2);">
+        <span>Envío</span>
+        <span style="color:var(--success); font-weight:600;">Gratis 🎉</span>
+      </div>
+      <div class="d-flex justify-content-between" style="font-size:1.05rem; font-family:'Outfit',sans-serif; font-weight:700; padding-top:12px; border-top:1px solid var(--border);">
+        <span>Total</span>
+        <span style="color:var(--accent);">$830 MXN</span>
+      </div>
+    </div>
+
+    <!-- Total Bar + Pay Button -->
+    <div class="cart-total-bar" id="cart-total-bar">
+      <div>
+        <div class="cart-total-bar__lbl">Total a pagar</div>
+        <div class="cart-total-bar__amt">$830 <span style="font-size:.75rem; font-weight:400; color:var(--text-3);">MXN</span></div>
+      </div>
+      <button class="btn-accent" data-toggle="modal" data-target="#payModal" style="white-space:nowrap;">
+        <i class="bi bi-credit-card"></i> Pagar Ahora
+      </button>
+    </div>
+
+  </main>
+
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <!-- Payment Success Modal -->
+  <div class="modal fade" id="payModal" tabindex="-1" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center">
+        <div class="modal-body" style="padding:40px 24px;">
+          <div style="font-size:3.5rem; margin-bottom:14px;">💳</div>
+          <h2 class="modal-title mb-2">¡Pago Exitoso!</h2>
+          <p style="color:var(--text-2); font-size:.88rem; margin-bottom:6px;">
+            Tu pedido fue procesado correctamente.
+          </p>
+          <p style="color:var(--text-3); font-size:.8rem; margin-bottom:24px;">
+            Orden: <strong style="color:var(--accent);">#CC-2026-0042</strong>
+          </p>
+          <a href="/" class="btn-accent" style="justify-content:center; width:100%;">
+            <i class="bi bi-house"></i> Volver al Inicio
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    CC.requireAuth([2]);
+  </script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Consulta y gestiona todas tus citas en CortaClic.">
+  <title>Mis Citas – CortaClic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+  <!-- Mobile Header -->
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <!-- Desktop Navbar -->
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <p class="page-hero__tag"><i class="bi bi-calendar-check mr-1"></i>Historial</p>
+      <h1 class="page-hero__title">Mis Citas</h1>
+      <p class="page-hero__sub">Gestiona tus reservas y citas agendadas.</p>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="pills-row mb-3" id="filter-pills">
+      <span class="pill active" data-filter="all">Todas</span>
+      <span class="pill" data-filter="proximas">Próximas</span>
+      <span class="pill" data-filter="completadas">Completadas</span>
+      <span class="pill" data-filter="canceladas">Canceladas</span>
+    </div>
+
+    <!-- Citas List -->
+    <div id="citas-list">
+
+      <!-- Cita 1 – Confirmada -->
+      <div class="cita-card" data-status="proximas">
+        <div class="cita-card__top">
+          <div class="cita-card__service">✂️ Corte Clásico</div>
+          <span class="sbadge sbadge-confirm">Confirmada</span>
+        </div>
+        <div class="cita-card__details">
+          <div class="cita-card__detail"><i class="bi bi-person-badge"></i> Carlos Méndez</div>
+          <div class="cita-card__detail"><i class="bi bi-calendar3"></i> 15 Ago 2026</div>
+          <div class="cita-card__detail"><i class="bi bi-clock"></i> 10:00 AM</div>
+          <div class="cita-card__detail"><i class="bi bi-tag"></i> $120 MXN</div>
+        </div>
+        <div class="cita-card__footer">
+          <button class="btn-danger-ghost mr-2">
+            <i class="bi bi-x-circle mr-1"></i>Cancelar
+          </button>
+          <button class="btn-ghost">
+            <i class="bi bi-eye mr-1"></i>Ver Detalle
+          </button>
+        </div>
+      </div>
+
+      <!-- Cita 2 – Pendiente -->
+      <div class="cita-card" data-status="proximas">
+        <div class="cita-card__top">
+          <div class="cita-card__service">💈 Fade / Degradado</div>
+          <span class="sbadge sbadge-pending">Pendiente</span>
+        </div>
+        <div class="cita-card__details">
+          <div class="cita-card__detail"><i class="bi bi-person-badge"></i> Roberto García</div>
+          <div class="cita-card__detail"><i class="bi bi-calendar3"></i> 20 Ago 2026</div>
+          <div class="cita-card__detail"><i class="bi bi-clock"></i> 11:30 AM</div>
+          <div class="cita-card__detail"><i class="bi bi-tag"></i> $150 MXN</div>
+        </div>
+        <div class="cita-card__footer">
+          <button class="btn-danger-ghost mr-2">
+            <i class="bi bi-x-circle mr-1"></i>Cancelar
+          </button>
+          <button class="btn-ghost">
+            <i class="bi bi-eye mr-1"></i>Ver Detalle
+          </button>
+        </div>
+      </div>
+
+      <!-- Cita 3 – Completada -->
+      <div class="cita-card" data-status="completadas">
+        <div class="cita-card__top">
+          <div class="cita-card__service">👑 Corte + Barba</div>
+          <span class="sbadge sbadge-done">Completada</span>
+        </div>
+        <div class="cita-card__details">
+          <div class="cita-card__detail"><i class="bi bi-person-badge"></i> Miguel Torres</div>
+          <div class="cita-card__detail"><i class="bi bi-calendar3"></i> 28 Jul 2026</div>
+          <div class="cita-card__detail"><i class="bi bi-clock"></i> 09:00 AM</div>
+          <div class="cita-card__detail"><i class="bi bi-tag"></i> $200 MXN</div>
+        </div>
+        <div class="cita-card__footer">
+          <button class="btn-ghost">
+            <i class="bi bi-eye mr-1"></i>Ver Detalle
+          </button>
+        </div>
+      </div>
+
+      <!-- Cita 4 – Completada -->
+      <div class="cita-card" data-status="completadas">
+        <div class="cita-card__top">
+          <div class="cita-card__service">🧔 Barba Completa</div>
+          <span class="sbadge sbadge-done">Completada</span>
+        </div>
+        <div class="cita-card__details">
+          <div class="cita-card__detail"><i class="bi bi-person-badge"></i> Carlos Méndez</div>
+          <div class="cita-card__detail"><i class="bi bi-calendar3"></i> 10 Jul 2026</div>
+          <div class="cita-card__detail"><i class="bi bi-clock"></i> 04:00 PM</div>
+          <div class="cita-card__detail"><i class="bi bi-tag"></i> $100 MXN</div>
+        </div>
+        <div class="cita-card__footer">
+          <button class="btn-ghost">
+            <i class="bi bi-eye mr-1"></i>Ver Detalle
+          </button>
+        </div>
+      </div>
+
+      <!-- Cita 5 – Cancelada -->
+      <div class="cita-card" data-status="canceladas">
+        <div class="cita-card__top">
+          <div class="cita-card__service">⚡ Diseño / Líneas</div>
+          <span class="sbadge sbadge-cancel">Cancelada</span>
+        </div>
+        <div class="cita-card__details">
+          <div class="cita-card__detail"><i class="bi bi-person-badge"></i> Roberto García</div>
+          <div class="cita-card__detail"><i class="bi bi-calendar3"></i> 02 Jul 2026</div>
+          <div class="cita-card__detail"><i class="bi bi-clock"></i> 02:30 PM</div>
+          <div class="cita-card__detail"><i class="bi bi-tag"></i> $80 MXN</div>
+        </div>
+        <div class="cita-card__footer">
+          <button class="btn-ghost">
+            <i class="bi bi-eye mr-1"></i>Ver Detalle
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /citas-list -->
+
+    <!-- Empty State (hidden) -->
+    <div class="empty-state d-none" id="empty-state">
+      <i class="bi bi-calendar-x d-block"></i>
+      <h3>Sin citas por aquí</h3>
+      <p>No tienes citas en esta categoría todavía.</p>
+      <a href="/servicios" class="btn-accent">
+        <i class="bi bi-plus-circle"></i> Agendar mi primera cita
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Bottom Nav (Mobile) -->
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    // Protect this page (only authenticated clients)
+    CC.requireAuth([2]);
+
+    // Pill filtering
+    document.querySelectorAll('#filter-pills .pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#filter-pills .pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const filter = pill.dataset.filter;
+        const cards  = document.querySelectorAll('#citas-list .cita-card');
+        let visible  = 0;
+
+        cards.forEach(card => {
+          const show = filter === 'all' || card.dataset.status === filter;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+
+        document.getElementById('empty-state').classList.toggle('d-none', visible > 0);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tu perfil de cliente en CortaClic.">
+  <title>Mi Perfil – CortaClic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+  <!-- Mobile Header -->
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <!-- Desktop Navbar -->
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <!-- Profile Hero -->
+    <div class="profile-hero">
+      <div class="profile-avatar" id="avatar-initials">?</div>
+      <h1 class="profile-name" id="profile-name">Cargando...</h1>
+      <p class="profile-email" id="profile-email">—</p>
+      <div class="profile-role-badge">
+        <i class="bi bi-shield-check"></i> Cliente
+      </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="info-card mb-4">
+      <div class="info-row">
+        <div class="info-row__label"><i class="bi bi-person"></i> Nombre</div>
+        <div class="info-row__value" id="info-nombre">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-row__label"><i class="bi bi-envelope"></i> Email</div>
+        <div class="info-row__value" id="info-email">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-row__label"><i class="bi bi-telephone"></i> Teléfono</div>
+        <div class="info-row__value" id="info-telefono">No registrado</div>
+      </div>
+      <div class="info-row">
+        <div class="info-row__label"><i class="bi bi-calendar"></i> Miembro desde</div>
+        <div class="info-row__value">Agosto 2026</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <p class="section-title"><i class="bi bi-grid-3x3-gap mr-2" style="color:var(--accent)"></i>Acciones rápidas</p>
+
+    <div class="d-flex flex-column" style="gap:10px; margin-bottom: 20px;">
+      <a href="/servicios" class="btn-ghost w-100 d-flex align-items-center justify-content-start" style="padding:14px 18px; border-radius: var(--r-lg);">
+        <i class="bi bi-calendar-plus mr-3" style="font-size:1.2rem; color:var(--accent)"></i>
+        <div>
+          <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.95rem;">Nueva Cita</div>
+          <div style="font-size:.78rem; color:var(--text-3);">Agenda un corte o servicio</div>
+        </div>
+        <i class="bi bi-chevron-right ml-auto" style="color:var(--text-3)"></i>
+      </a>
+
+      <a href="/mis-citas" class="btn-ghost w-100 d-flex align-items-center justify-content-start" style="padding:14px 18px; border-radius: var(--r-lg);">
+        <i class="bi bi-calendar-check mr-3" style="font-size:1.2rem; color:var(--accent)"></i>
+        <div>
+          <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.95rem;">Mis Citas</div>
+          <div style="font-size:.78rem; color:var(--text-3);">Ver historial de reservas</div>
+        </div>
+        <i class="bi bi-chevron-right ml-auto" style="color:var(--text-3)"></i>
+      </a>
+
+      <a href="/tienda" class="btn-ghost w-100 d-flex align-items-center justify-content-start" style="padding:14px 18px; border-radius: var(--r-lg);">
+        <i class="bi bi-bag mr-3" style="font-size:1.2rem; color:var(--accent)"></i>
+        <div>
+          <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.95rem;">Ir a la Tienda</div>
+          <div style="font-size:.78rem; color:var(--text-3);">Productos de barbería premium</div>
+        </div>
+        <i class="bi bi-chevron-right ml-auto" style="color:var(--text-3)"></i>
+      </a>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider-text">Cuenta</div>
+
+    <!-- Logout -->
+    <button
+      class="btn-danger-ghost w-100 d-flex align-items-center justify-content-center"
+      style="padding:14px; border-radius:var(--r-lg); font-size:.92rem;"
+      onclick="CC.logout()"
+    >
+      <i class="bi bi-box-arrow-right mr-2"></i> Cerrar sesión
+    </button>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    // Protect page
+    CC.requireAuth();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = CC.getUser();
+      if (!user) return;
+
+      // Avatar: first letter of nombre
+      const initials = user.nombre ? user.nombre.charAt(0).toUpperCase() : '?';
+      document.getElementById('avatar-initials').textContent = initials;
+
+      // Fill info
+      document.getElementById('profile-name').textContent  = user.nombre  || '—';
+      document.getElementById('profile-email').textContent = user.email   || '—';
+      document.getElementById('info-nombre').textContent   = user.nombre  || '—';
+      document.getElementById('info-email').textContent    = user.email   || '—';
+      document.getElementById('info-telefono').textContent = user.telefono || 'No registrado';
+    });
+  </script>
+</body>
+</html>

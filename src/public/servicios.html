@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catálogo completo de cortes y servicios de barbería en CortaClic.">
+  <title>Servicios – CortaClic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <div class="page-hero">
+      <p class="page-hero__tag"><i class="bi bi-grid mr-1"></i>Catálogo</p>
+      <h1 class="page-hero__title">Nuestros Cortes</h1>
+      <p class="page-hero__sub">Elige tu estilo favorito y agenda en segundos.</p>
+    </div>
+
+    <div class="search-bar">
+      <i class="bi bi-search si"></i>
+      <input type="text" id="search-svc" placeholder="Buscar servicio...">
+    </div>
+
+    <div class="pills-row" id="cat-pills">
+      <span class="pill active" data-cat="Todos">Todos</span>
+      <span class="pill" data-cat="Cortes">Cortes</span>
+      <span class="pill" data-cat="Barba">Barba</span>
+      <span class="pill" data-cat="Combos">Combos</span>
+      <span class="pill" data-cat="Diseños">Diseños</span>
+    </div>
+
+    <div id="svc-list">
+      <div class="service-card" data-toggle="modal" data-target="#svcModal"
+           data-name="Corte Clásico" data-price="$120 MXN" data-dur="30 min"
+           data-cat="Cortes" data-emoji="✂️" data-grad="g1"
+           data-desc="El corte que nunca pasa de moda. Perfecto para cualquier ocasión, lo dejamos limpio, nítido y con el acabado que siempre buscas. Incluye lavado y peinado final.">
+        <div class="service-card__img g1">✂️</div>
+        <div class="service-card__body">
+          <div class="service-card__name">Corte Clásico</div>
+          <div class="service-card__meta">
+            <span class="service-card__price">$120</span>
+            <span class="service-card__dur"><i class="bi bi-clock"></i> 30 min</span>
+          </div>
+          <p class="service-card__desc">El corte atemporal que nunca falla</p>
+        </div>
+        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>
+
+      <div class="service-card" data-toggle="modal" data-target="#svcModal"
+           data-name="Fade / Degradado" data-price="$150 MXN" data-dur="45 min"
+           data-cat="Cortes" data-emoji="💈" data-grad="g2"
+           data-desc="De cero a héroe con un degradado perfecto. Trabajamos cada nivel con precisión para que el fade quede impecable. Disponible en low, mid y high fade.">
+        <div class="service-card__img g2">💈</div>
+        <div class="service-card__body">
+          <div class="service-card__name">Fade / Degradado</div>
+          <div class="service-card__meta">
+            <span class="service-card__price">$150</span>
+            <span class="service-card__dur"><i class="bi bi-clock"></i> 45 min</span>
+          </div>
+          <p class="service-card__desc">De cero a héroe con degradado perfecto</p>
+        </div>
+        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>
+
+      <div class="service-card" data-toggle="modal" data-target="#svcModal"
+           data-name="Barba Completa" data-price="$100 MXN" data-dur="30 min"
+           data-cat="Barba" data-emoji="🧔" data-grad="g3"
+           data-desc="Perfila, recorta y domina tu barba con técnica profesional. Incluye acondicionamiento con aceite de barba y perfilado de líneas para un acabado impecable.">
+        <div class="service-card__img g3">🧔</div>
+        <div class="service-card__body">
+          <div class="service-card__name">Barba Completa</div>
+          <div class="service-card__meta">
+            <span class="service-card__price">$100</span>
+            <span class="service-card__dur"><i class="bi bi-clock"></i> 30 min</span>
+          </div>
+          <p class="service-card__desc">Perfila, recorta y domina tu barba</p>
+        </div>
+        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>
+
+      <div class="service-card" data-toggle="modal" data-target="#svcModal"
+           data-name="Corte + Barba" data-price="$200 MXN" data-dur="60 min"
+           data-cat="Combos" data-emoji="👑" data-grad="g4"
+           data-desc="El combo completo para lucir impecable. Nuestro paquete estrella incluye corte de cabello, perfilado y recorte de barba completo. El favorito de nuestros clientes.">
+        <div class="service-card__img g4">👑</div>
+        <div class="service-card__body">
+          <div class="service-card__name">Corte + Barba</div>
+          <div class="service-card__meta">
+            <span class="service-card__price">$200</span>
+            <span class="service-card__dur"><i class="bi bi-clock"></i> 60 min</span>
+          </div>
+          <p class="service-card__desc">Combo completo para lucir impecable</p>
+        </div>
+        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>
+
+      <div class="service-card" data-toggle="modal" data-target="#svcModal"
+           data-name="Diseño / Líneas" data-price="$80 MXN" data-dur="20 min"
+           data-cat="Diseños" data-emoji="⚡" data-grad="g5"
+           data-desc="Líneas nítidas y diseños únicos que marcan tu personalidad. Nuestros barberos trazan patrones con precisión milimétrica usando las mejores máquinas del mercado.">
+        <div class="service-card__img g5">⚡</div>
+        <div class="service-card__body">
+          <div class="service-card__name">Diseño / Líneas</div>
+          <div class="service-card__meta">
+            <span class="service-card__price">$80</span>
+            <span class="service-card__dur"><i class="bi bi-clock"></i> 20 min</span>
+          </div>
+          <p class="service-card__desc">Líneas nítidas y diseños únicos</p>
+        </div>
+        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>
+
+      <div class="service-card" data-toggle="modal" data-target="#svcModal"
+           data-name="Afeitado Navaja" data-price="$130 MXN" data-dur="40 min"
+           data-cat="Barba" data-emoji="🪒" data-grad="g6"
+           data-desc="La experiencia clásica de barbería con navaja caliente. Ritual completo: toalla caliente, crema artesanal y acabado ultra suave. Una experiencia de lujo.">
+        <div class="service-card__img g6">🪒</div>
+        <div class="service-card__body">
+          <div class="service-card__name">Afeitado Navaja</div>
+          <div class="service-card__meta">
+            <span class="service-card__price">$130</span>
+            <span class="service-card__dur"><i class="bi bi-clock"></i> 40 min</span>
+          </div>
+          <p class="service-card__desc">Experiencia clásica con navaja caliente</p>
+        </div>
+        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+      </div>
+    </div>
+
+    <div class="empty-state d-none" id="empty-svc">
+      <i class="bi bi-scissors d-block"></i>
+      <h3>Sin resultados</h3>
+      <p>No encontramos servicios con ese filtro.</p>
+    </div>
+
+  </main>
+
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <!-- Service Modal -->
+  <div class="modal fade" id="svcModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body pt-0">
+          <div id="svc-modal-img" class="modal-img g1">✂️</div>
+          <h2 class="modal-title mb-2" id="svc-modal-name">—</h2>
+          <div class="modal-price mb-1" id="svc-modal-price">—</div>
+          <div class="modal-meta">
+            <div class="modal-meta-item"><i class="bi bi-clock"></i><span id="svc-modal-dur">—</span></div>
+            <div class="modal-meta-item"><i class="bi bi-tag"></i><span id="svc-modal-cat">—</span></div>
+            <div class="modal-meta-item"><i class="bi bi-star-fill" style="color:#F59E0B"></i><span>4.9 · 128 reseñas</span></div>
+          </div>
+          <p class="modal-desc" id="svc-modal-desc">—</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-ghost mr-2" data-dismiss="modal">Cerrar</button>
+          <a id="svc-btn-agendar" href="#" class="btn-accent">
+            <i class="bi bi-calendar-plus"></i> Agendar Cita
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    // Modal population
+    document.querySelectorAll('.service-card').forEach(c => {
+      c.addEventListener('click', () => {
+        const d = c.dataset;
+        const img = document.getElementById('svc-modal-img');
+        img.textContent = d.emoji;
+        img.className = 'modal-img ' + d.grad;
+        document.getElementById('svc-modal-name').textContent  = d.name;
+        document.getElementById('svc-modal-price').textContent = d.price;
+        document.getElementById('svc-modal-dur').textContent   = d.dur;
+        document.getElementById('svc-modal-cat').textContent   = d.cat;
+        document.getElementById('svc-modal-desc').textContent  = d.desc;
+        document.getElementById('svc-btn-agendar').href = CC.isLoggedIn() ? '/servicios/reservar' : '/login';
+      });
+    });
+
+    // Category pill filter
+    document.querySelectorAll('#cat-pills .pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#cat-pills .pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        filterCards();
+      });
+    });
+
+    // Search filter
+    document.getElementById('search-svc').addEventListener('input', filterCards);
+
+    function filterCards() {
+      const q   = document.getElementById('search-svc').value.toLowerCase();
+      const cat = document.querySelector('#cat-pills .pill.active').dataset.cat;
+      const cards = document.querySelectorAll('.service-card');
+      let visible = 0;
+      cards.forEach(c => {
+        const matchCat  = cat === 'Todos' || c.dataset.cat === cat;
+        const matchName = c.dataset.name.toLowerCase().includes(q);
+        const show = matchCat && matchName;
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('empty-svc').classList.toggle('d-none', visible > 0);
+    }
+  </script>
+</body>
+</html>
