@@ -1,13 +1,9 @@
 const { Router } = require('express');
+const { getServicios, getServicioById } = require('../controllers/servicioController');
 
 const router = Router();
 
-router.get('/', (req, res) => {
-	res.status(200).json({
-		ok: true,
-		section: 'servicios',
-		message: 'Ruta de servicios lista',
-	});
-});
+router.get('/', getServicios);
+router.get('/:id', getServicioById);
 
 module.exports = router;

@@ -8,6 +8,58 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .quick-shortcut {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 14px 10px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s, transform .2s, background .2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .quick-shortcut:hover {
+      border-color: var(--accent);
+      background: var(--surface-h);
+      color: var(--accent);
+      text-decoration: none;
+      transform: translateY(-2px);
+    }
+    .quick-shortcut i {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+    .quick-shortcut span {
+      font-family: 'Outfit', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .barber-card-home {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      transition: border-color .2s;
+    }
+    .barber-card-home:hover { border-color: var(--border-a); }
+    .barber-avatar-home {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-a);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; color: var(--accent); flex-shrink: 0;
+    }
+  </style>
 </head>
 <body>
 
@@ -21,125 +73,81 @@
     <!-- Hero -->
     <div class="page-hero">
       <p class="page-hero__tag"><i class="bi bi-scissors mr-1"></i>Barbería Premium</p>
-      <h1 class="page-hero__title">¿Qué corte te<br>ponemos hoy?</h1>
-      <p class="page-hero__sub">Agenda tu cita en segundos, sin llamadas ni esperas.</p>
+      <h1 class="page-hero__title">Tu estilo en las<br>mejores manos</h1>
+      <p class="page-hero__sub">Agenda tu cita en segundos y gestiona tus reservas fácilmente.</p>
+      
+      <div class="d-flex flex-wrap gap-2 mt-3" style="gap:10px;">
+        <a href="/servicios/reservar" class="btn-accent">
+          <i class="bi bi-calendar-plus"></i> Agendar Cita
+        </a>
+        <a href="/servicios" class="btn-ghost">
+          <i class="bi bi-grid-3x3-gap"></i> Ver Catálogo
+        </a>
+      </div>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar">
-      <i class="bi bi-search si"></i>
-      <input type="text" id="search-input" placeholder="Buscar corte de pelo..." autocomplete="off">
+    <!-- Quick Shortcuts Grid -->
+    <div class="row mb-4" style="margin:0 -4px;">
+      <div class="col-3 px-1">
+        <a href="/servicios" class="quick-shortcut">
+          <i class="bi bi-scissors"></i>
+          <span>Cortes</span>
+        </a>
+      </div>
+      <div class="col-3 px-1">
+        <a href="/tienda" class="quick-shortcut">
+          <i class="bi bi-shop"></i>
+          <span>Tienda</span>
+        </a>
+      </div>
+      <div class="col-3 px-1">
+        <a href="/mis-citas" class="quick-shortcut">
+          <i class="bi bi-calendar-check"></i>
+          <span>Citas</span>
+        </a>
+      </div>
+      <div class="col-3 px-1">
+        <a href="/perfil" class="quick-shortcut">
+          <i class="bi bi-person"></i>
+          <span>Perfil</span>
+        </a>
+      </div>
     </div>
 
-    <!-- Section Title -->
-    <p class="section-title"><i class="bi bi-scissors mr-2" style="color:var(--accent)"></i>Nuestros Servicios</p>
+    <!-- Section Title: Cortes Más Populares -->
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <p class="section-title mb-0" style="flex:1;"><i class="bi bi-star-fill mr-2" style="color:var(--accent)"></i>Cortes Destacados</p>
+      <a href="/servicios" style="font-size:.78rem; font-weight:700; color:var(--accent); white-space:nowrap;" class="ml-2">Ver todos →</a>
+    </div>
 
-    <!-- Service Cards -->
-    <div id="services-list">
+    <!-- Loading State -->
+    <div id="loading-popular" class="text-center py-4">
+      <span class="btn-spinner mb-2"></span>
+      <p style="font-size:.82rem; color:var(--text-3);">Cargando cortes populares...</p>
+    </div>
 
-      <div class="service-card" data-toggle="modal" data-target="#serviceModal"
-           data-name="Corte Clásico" data-price="$120 MXN" data-dur="30 min"
-           data-cat="Cortes" data-emoji="✂️" data-grad="g1"
-           data-desc="El corte que nunca pasa de moda. Perfecto para cualquier ocasión, lo dejamos limpio, nítido y con el acabado que siempre buscas.">
-        <div class="service-card__img g1">✂️</div>
-        <div class="service-card__body">
-          <div class="service-card__name">Corte Clásico</div>
-          <div class="service-card__meta">
-            <span class="service-card__price">$120</span>
-            <span class="service-card__dur"><i class="bi bi-clock"></i> 30 min</span>
-          </div>
-          <p class="service-card__desc">El corte atemporal que nunca falla</p>
-        </div>
-        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+    <!-- Popular Service Cards (Horizontal format) -->
+    <div id="popular-list" style="display:none;" class="mb-4"></div>
+
+    <!-- Section Title: Nuestros Barberos -->
+    <p class="section-title"><i class="bi bi-people-fill mr-2" style="color:var(--accent)"></i>Nuestros Barberos</p>
+
+    <!-- Barbers List Container -->
+    <div id="barbers-home-list" class="mb-4">
+      <div class="text-center py-3" id="loading-barbers">
+        <span class="btn-spinner mb-1"></span>
       </div>
+    </div>
 
-      <div class="service-card" data-toggle="modal" data-target="#serviceModal"
-           data-name="Fade / Degradado" data-price="$150 MXN" data-dur="45 min"
-           data-cat="Cortes" data-emoji="💈" data-grad="g2"
-           data-desc="De cero a héroe con un degradado perfecto. Trabajamos cada nivel con precisión para que el fade quede impecable desde raíz hasta las puntas.">
-        <div class="service-card__img g2">💈</div>
-        <div class="service-card__body">
-          <div class="service-card__name">Fade / Degradado</div>
-          <div class="service-card__meta">
-            <span class="service-card__price">$150</span>
-            <span class="service-card__dur"><i class="bi bi-clock"></i> 45 min</span>
-          </div>
-          <p class="service-card__desc">De cero a héroe con degradado perfecto</p>
+    <!-- Banner Tienda -->
+    <div class="booking-card d-flex align-items-center justify-content-between flex-wrap" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(17,24,39,0.9)); border-color: var(--border-a); gap:12px;">
+      <div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.05rem;" class="mb-1">
+          <i class="bi bi-bag-check mr-1" style="color:var(--accent)"></i> Productos de Barbería
         </div>
-        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+        <div style="font-size:.8rem; color:var(--text-2);">Lleva ceras, aceites y acondicionadores a casa.</div>
       </div>
-
-      <div class="service-card" data-toggle="modal" data-target="#serviceModal"
-           data-name="Barba Completa" data-price="$100 MXN" data-dur="30 min"
-           data-cat="Barba" data-emoji="🧔" data-grad="g3"
-           data-desc="Perfila, recorta y domina tu barba como nunca. Usamos técnicas profesionales y productos de calidad para que luzcas un acabado perfecto y duradero.">
-        <div class="service-card__img g3">🧔</div>
-        <div class="service-card__body">
-          <div class="service-card__name">Barba Completa</div>
-          <div class="service-card__meta">
-            <span class="service-card__price">$100</span>
-            <span class="service-card__dur"><i class="bi bi-clock"></i> 30 min</span>
-          </div>
-          <p class="service-card__desc">Perfila, recorta y domina tu barba</p>
-        </div>
-        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
-      </div>
-
-      <div class="service-card" data-toggle="modal" data-target="#serviceModal"
-           data-name="Corte + Barba" data-price="$200 MXN" data-dur="60 min"
-           data-cat="Combos" data-emoji="👑" data-grad="g4"
-           data-desc="El combo completo para lucir impecable de la cabeza a la barba. Ahorra tiempo y dinero con nuestro paquete estrella, el favorito de nuestros clientes.">
-        <div class="service-card__img g4">👑</div>
-        <div class="service-card__body">
-          <div class="service-card__name">Corte + Barba</div>
-          <div class="service-card__meta">
-            <span class="service-card__price">$200</span>
-            <span class="service-card__dur"><i class="bi bi-clock"></i> 60 min</span>
-          </div>
-          <p class="service-card__desc">Combo completo para lucir impecable</p>
-        </div>
-        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
-      </div>
-
-      <div class="service-card" data-toggle="modal" data-target="#serviceModal"
-           data-name="Diseño / Líneas" data-price="$80 MXN" data-dur="20 min"
-           data-cat="Diseños" data-emoji="⚡" data-grad="g5"
-           data-desc="Líneas nítidas y diseños únicos que marcan la diferencia. Express tus personalidad con patrones y trazos de precisión realizados por manos expertas.">
-        <div class="service-card__img g5">⚡</div>
-        <div class="service-card__body">
-          <div class="service-card__name">Diseño / Líneas</div>
-          <div class="service-card__meta">
-            <span class="service-card__price">$80</span>
-            <span class="service-card__dur"><i class="bi bi-clock"></i> 20 min</span>
-          </div>
-          <p class="service-card__desc">Líneas nítidas y diseños únicos</p>
-        </div>
-        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
-      </div>
-
-      <div class="service-card" data-toggle="modal" data-target="#serviceModal"
-           data-name="Afeitado Navaja" data-price="$130 MXN" data-dur="40 min"
-           data-cat="Barba" data-emoji="🪒" data-grad="g6"
-           data-desc="La experiencia clásica de barbería con navaja caliente. Un ritual de grooming que combina toalla caliente, crema artesanal y acabado ultra suave.">
-        <div class="service-card__img g6">🪒</div>
-        <div class="service-card__body">
-          <div class="service-card__name">Afeitado Navaja</div>
-          <div class="service-card__meta">
-            <span class="service-card__price">$130</span>
-            <span class="service-card__dur"><i class="bi bi-clock"></i> 40 min</span>
-          </div>
-          <p class="service-card__desc">Experiencia clásica con navaja caliente</p>
-        </div>
-        <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
-      </div>
-
-    </div><!-- /services-list -->
-
-    <!-- Empty search state -->
-    <div class="empty-state d-none" id="empty-search">
-      <i class="bi bi-search d-block"></i>
-      <h3>Sin resultados</h3>
-      <p>No encontramos servicios con ese nombre.</p>
+      <a href="/tienda" class="btn-accent" style="padding:8px 18px; font-size:.82rem;">Ir a la Tienda</a>
     </div>
 
   </main>
@@ -157,29 +165,18 @@
           </button>
         </div>
         <div class="modal-body pt-0">
-          <!-- Image -->
-          <div id="modal-img" class="modal-img g1" style="font-size:4rem;">✂️</div>
-          <!-- Name -->
-          <h2 class="modal-title mb-2" id="modal-name">Corte Clásico</h2>
-          <!-- Price -->
-          <div class="modal-price mb-1" id="modal-price">$120 MXN</div>
-          <!-- Meta -->
-          <div class="modal-meta">
+          <div class="modal-img mb-3">
+            <img id="modal-img-el" src="/img/default-service.svg" alt="Servicio" onerror="this.onerror=null;this.src='/img/default-service.svg';">
+          </div>
+          <h2 class="modal-title mb-2" id="modal-name">—</h2>
+          <div class="modal-price mb-2" id="modal-price">$0.00</div>
+          <div class="modal-meta mb-3">
             <div class="modal-meta-item">
               <i class="bi bi-clock"></i>
-              <span id="modal-dur">30 min</span>
-            </div>
-            <div class="modal-meta-item">
-              <i class="bi bi-tag"></i>
-              <span id="modal-cat">Cortes</span>
-            </div>
-            <div class="modal-meta-item">
-              <i class="bi bi-star-fill" style="color:#F59E0B"></i>
-              <span>4.9 (128 reseñas)</span>
+              <span id="modal-dur">— min</span>
             </div>
           </div>
-          <!-- Description -->
-          <p class="modal-desc" id="modal-desc">Descripción del servicio.</p>
+          <p class="modal-desc" id="modal-desc">—</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-ghost mr-2" data-dismiss="modal">Cerrar</button>
@@ -195,36 +192,111 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/site.js"></script>
   <script>
-    // Populate modal on card click
-    document.querySelectorAll('.service-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const { name, price, dur, cat, emoji, grad, desc } = card.dataset;
-        const img = document.getElementById('modal-img');
-        img.textContent = emoji;
-        img.className   = 'modal-img ' + grad;
-        document.getElementById('modal-name').textContent = name;
-        document.getElementById('modal-price').textContent = price;
-        document.getElementById('modal-dur').textContent   = dur;
-        document.getElementById('modal-cat').textContent   = cat;
-        document.getElementById('modal-desc').textContent  = desc;
-        // Agendar button: check login
-        const btnAgendar = document.getElementById('btn-agendar');
-        btnAgendar.href = CC.isLoggedIn() ? '/servicios/reservar' : '/login';
-      });
+    // Format dollars ($)
+    function formatDollars(val) {
+      return `$${(parseFloat(val) || 0).toFixed(2)}`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadPopularServices();
+      await loadHomeBarbers();
     });
 
-    // Live search
-    document.getElementById('search-input').addEventListener('input', function () {
-      const q = this.value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.service-card');
-      let visible = 0;
-      cards.forEach(c => {
-        const match = c.dataset.name.toLowerCase().includes(q);
-        c.style.display = match ? '' : 'none';
-        if (match) visible++;
-      });
-      document.getElementById('empty-search').classList.toggle('d-none', visible > 0);
-    });
+    // Load top services for Home
+    async function loadPopularServices() {
+      const loader = document.getElementById('loading-popular');
+      const listEl = document.getElementById('popular-list');
+
+      try {
+        const res = await fetch('/api/servicios');
+        const data = await res.json();
+
+        loader.style.display = 'none';
+
+        if (data.ok && Array.isArray(data.servicios) && data.servicios.length > 0) {
+          // Take top 4 for Home
+          const topServices = data.servicios.slice(0, 4);
+          listEl.innerHTML = '';
+
+          topServices.forEach(s => {
+            const imgPath = s.imagen ? s.imagen : '/img/default-service.svg';
+            const card = document.createElement('div');
+            card.className = 'service-card';
+            card.innerHTML = `
+              <div class="service-card__img">
+                <img src="${escapeHtml(imgPath)}" alt="${escapeHtml(s.nombre)}" onerror="this.onerror=null;this.src='/img/default-service.svg';">
+              </div>
+              <div class="service-card__body">
+                <div class="service-card__name">${escapeHtml(s.nombre)}</div>
+                <div class="service-card__meta">
+                  <span class="service-card__price">${formatDollars(s.precio)}</span>
+                  <span class="service-card__dur"><i class="bi bi-clock"></i> ${s.duracion_minutos} min</span>
+                </div>
+                <p class="service-card__desc">${escapeHtml(s.descripcion || '')}</p>
+              </div>
+              <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+            `;
+            card.addEventListener('click', () => openModal(s));
+            listEl.appendChild(card);
+          });
+
+          listEl.style.display = 'block';
+        }
+      } catch (err) {
+        console.error('Error al cargar populares:', err);
+        loader.style.display = 'none';
+      }
+    }
+
+    // Load Barbers list for Home
+    async function loadHomeBarbers() {
+      const container = document.getElementById('barbers-home-list');
+      try {
+        const res = await fetch('/api/barberos');
+        const data = await res.json();
+        container.innerHTML = '';
+
+        if (data.ok && Array.isArray(data.barberos) && data.barberos.length > 0) {
+          data.barberos.forEach(b => {
+            const card = document.createElement('div');
+            card.className = 'barber-card-home';
+            card.innerHTML = `
+              <div class="barber-avatar-home"><i class="bi bi-person"></i></div>
+              <div style="flex:1;">
+                <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.92rem;">${escapeHtml(b.nombre)}</div>
+                <div style="font-size:.76rem; color:var(--text-3);">${escapeHtml(b.especialidad || 'Especialista en barbería')}</div>
+              </div>
+              <a href="/servicios/reservar" class="btn-ghost" style="padding:6px 12px; font-size:.75rem;">Agendar</a>
+            `;
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = '<p style="font-size:.8rem; color:var(--text-3);">No hay barberos registrados.</p>';
+        }
+      } catch (err) {
+        console.error('Error al cargar barberos:', err);
+        container.innerHTML = '';
+      }
+    }
+
+    function openModal(s) {
+      const imgPath = s.imagen ? s.imagen : '/img/default-service.svg';
+      document.getElementById('modal-img-el').src = imgPath;
+      document.getElementById('modal-name').textContent = s.nombre;
+      document.getElementById('modal-price').textContent = formatDollars(s.precio);
+      document.getElementById('modal-dur').textContent = `${s.duracion_minutos} min`;
+      document.getElementById('modal-desc').textContent = s.descripcion || 'Sin descripción disponible.';
+
+      const btnAgendar = document.getElementById('btn-agendar');
+      btnAgendar.href = CC.isLoggedIn() ? `/servicios/reservar?id=${s.id}` : '/login';
+
+      $('#serviceModal').modal('show');
+    }
   </script>
 </body>
 </html>

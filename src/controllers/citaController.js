@@ -1,0 +1,235 @@
+const Cita = require('../models/Cita');
+const Barbero = require('../models/Barbero');
+const Servicio = require('../models/Servicio');
+
+/**
+ * Helper para obtener la fecha local en formato YYYY-MM-DD
+ */
+function getLocalDateString(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * GET /api/citas/disponibilidad
+ * Query: ?barbero_id=1&fecha=2026-08-11&servicio_id=2
+ */
+exports.getDisponibilidad = async (req, res) => {
+  try {
+    const { barbero_id, fecha, servicio_id } = req.query;
+
+    if (!fecha) {
+      return res.status(400).json({ ok: false, message: 'La fecha es requerida (YYYY-MM-DD).' });
+    }
+
+    const now = new Date();
+    const todayStr = getLocalDateString(now);
+    const currentHour = now.getHours();
+    const currentMin = now.getMinutes();
+
+    if (fecha < todayStr) {
+      return res.status(400).json({ ok: false, message: 'No puedes consultar fechas pasadas.' });
+    }
+
+    // Duración del servicio
+    let duracion = 30;
+    if (servicio_id) {
+      const servicio = await Servicio.findById(servicio_id);
+      if (servicio) duracion = servicio.duracion_minutos;
+    }
+
+    // Barberos a consultar
+    let listBarberos = [];
+    if (barbero_id && barbero_id !== 'any' && !isNaN(barbero_id)) {
+      const single = await Barbero.findById(Number(barbero_id));
+      if (single) listBarberos = [single];
+    }
+    
+    if (listBarberos.length === 0) {
+      listBarberos = await Barbero.findAll();
+    }
+
+    if (listBarberos.length === 0) {
+      return res.status(400).json({ ok: false, message: 'No hay barberos registrados en el sistema.' });
+    }
+
+    // Generar slots de horario (09:00 a 18:30)
+    const startHour = 9;  // 09:00 AM
+    const endHour   = 19; // 07:00 PM
+    const slots = [];
+
+    const isToday = (fecha === todayStr);
+
+    for (let h = startHour; h < endHour; h++) {
+      for (let m of [0, 30]) {
+        const horaStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        const slotDateTimeStr = `${fecha} ${horaStr}:00`;
+
+        // REGLA: Si la fecha es HOY, descartar completamente cualquier hora que ya haya transcurrido
+        let slotIsPast = false;
+        if (isToday) {
+          if (h < currentHour || (h === currentHour && m <= currentMin)) {
+            slotIsPast = true;
+          }
+        }
+
+        let isAvailable = false;
+        let assignedBarberId = null;
+
+        if (!slotIsPast) {
+          // Verificar disponibilidad entre los barberos candidatos
+          for (let b of listBarberos) {
+            const free = await Cita.isBarberAvailable(b.id, slotDateTimeStr, duracion);
+            if (free) {
+              isAvailable = true;
+              assignedBarberId = b.id;
+              break; // Con 1 barbero libre alcanza
+            }
+          }
+        }
+
+        slots.push({
+          hora: horaStr,
+          disponible: isAvailable,
+          barberoId: assignedBarberId
+        });
+      }
+    }
+
+    return res.status(200).json({ ok: true, fecha, slots });
+  } catch (err) {
+    console.error('[citaController.getDisponibilidad]', err);
+    return res.status(500).json({ ok: false, message: 'Error al consultar disponibilidad.' });
+  }
+};
+
+/**
+ * POST /api/citas
+ * Body: { barbero_id, servicio_id, fecha, hora }
+ */
+exports.crearCita = async (req, res) => {
+  try {
+    const clienteId = req.user.id;
+    const { barbero_id, servicio_id, fecha, hora } = req.body;
+
+    if (!servicio_id || !fecha || !hora) {
+      return res.status(400).json({ ok: false, message: 'Servicio, fecha y hora son requeridos.' });
+    }
+
+    const now = new Date();
+    const todayStr = getLocalDateString(now);
+    const currentHour = now.getHours();
+    const currentMin = now.getMinutes();
+
+    if (fecha < todayStr) {
+      return res.status(400).json({ ok: false, message: 'No puedes agendar citas en fechas pasadas.' });
+    }
+
+    // Validar servicio
+    const servicio = await Servicio.findById(servicio_id);
+    if (!servicio) {
+      return res.status(404).json({ ok: false, message: 'El servicio seleccionado no existe.' });
+    }
+
+    const fechaHoraStr = `${fecha} ${hora}:00`;
+
+    // Si es hoy, validar estricto que la hora elegida no sea pasada
+    if (fecha === todayStr) {
+      const [hStr, mStr] = hora.split(':');
+      const h = parseInt(hStr, 10);
+      const m = parseInt(mStr, 10);
+
+      if (h < currentHour || (h === currentHour && m <= currentMin)) {
+        return res.status(400).json({ ok: false, message: 'El horario seleccionado ya ha transcurrido.' });
+      }
+    }
+
+    let finalBarberoId = null;
+
+    // Asignar barbero
+    if (barbero_id && barbero_id !== 'any' && !isNaN(barbero_id)) {
+      const bId = Number(barbero_id);
+      const isFree = await Cita.isBarberAvailable(bId, fechaHoraStr, servicio.duracion_minutos);
+      if (!isFree) {
+        return res.status(409).json({ ok: false, message: 'El barbero seleccionado ya no tiene disponible ese horario.' });
+      }
+      finalBarberoId = bId;
+    } else {
+      // Buscar el primer barbero libre ("Cualquier barbero")
+      const allBarberos = await Barbero.findAll();
+      for (let b of allBarberos) {
+        const isFree = await Cita.isBarberAvailable(b.id, fechaHoraStr, servicio.duracion_minutos);
+        if (isFree) {
+          finalBarberoId = b.id;
+          break;
+        }
+      }
+
+      if (!finalBarberoId) {
+        return res.status(409).json({ ok: false, message: 'No hay barberos disponibles en el horario seleccionado.' });
+      }
+    }
+
+    // Crear cita en DB
+    const nuevaCita = await Cita.create({
+      clienteId,
+      barberoId: finalBarberoId,
+      servicioId: servicio.id,
+      fechaHora: fechaHoraStr
+    });
+
+    const barberoInfo = await Barbero.findById(finalBarberoId);
+
+    return res.status(201).json({
+      ok: true,
+      message: '¡Cita agendada con éxito!',
+      cita: {
+        ...nuevaCita,
+        servicioNombre: servicio.nombre,
+        servicioPrecio: servicio.precio,
+        barberoNombre: barberoInfo ? barberoInfo.nombre : 'Barbero Asignado',
+        fecha,
+        hora
+      }
+    });
+  } catch (err) {
+    console.error('[citaController.crearCita]', err);
+    return res.status(500).json({ ok: false, message: 'Error interno al agendar la cita.' });
+  }
+};
+
+/**
+ * GET /api/citas/mis-citas
+ */
+exports.getMisCitas = async (req, res) => {
+  try {
+    const clienteId = req.user.id;
+    const citas = await Cita.findByCliente(clienteId);
+    return res.status(200).json({ ok: true, citas });
+  } catch (err) {
+    console.error('[citaController.getMisCitas]', err);
+    return res.status(500).json({ ok: false, message: 'Error al obtener tus citas.' });
+  }
+};
+
+/**
+ * PATCH /api/citas/:id/cancelar
+ */
+exports.cancelarCita = async (req, res) => {
+  try {
+    const clienteId = req.user.id;
+    const { id } = req.params;
+
+    const success = await Cita.cancel(id, clienteId);
+    if (!success) {
+      return res.status(400).json({ ok: false, message: 'No se pudo cancelar la cita.' });
+    }
+
+    return res.status(200).json({ ok: true, message: 'Cita cancelada correctamente.' });
+  } catch (err) {
+    console.error('[citaController.cancelarCita]', err);
+    return res.status(500).json({ ok: false, message: 'Error al cancelar la cita.' });
+  }
+};

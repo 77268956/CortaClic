@@ -353,12 +353,20 @@ a { text-decoration: none; color: inherit; }
 .service-card__img {
   width: 92px;
   min-width: 92px;
+  height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
   border-radius: var(--r-lg) 0 0 var(--r-lg);
   flex-shrink: 0;
+  overflow: hidden;
+  background: var(--surface-h);
+}
+
+.service-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .service-card__body {
@@ -613,13 +621,20 @@ a { text-decoration: none; color: inherit; }
 .modal-backdrop.show { opacity: .65; }
 
 .modal-img {
-  height: 170px;
+  height: 180px;
   border-radius: var(--r-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 4rem;
   margin-bottom: 16px;
+  overflow: hidden;
+  background: var(--surface-h);
+}
+
+.modal-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .modal-price {
@@ -1143,3 +1158,128 @@ select.cc-input { cursor: pointer; }
 }
 
 .fade-up { animation: fadeUp .35s ease forwards; }
+
+/* ── Catalog Card (vertical grid layout for servicios.html) ───── */
+.catalog-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+  position: relative;
+}
+
+.catalog-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-a);
+  box-shadow: 0 12px 32px rgba(245,158,11,.12);
+}
+
+.catalog-card:active {
+  transform: scale(.98);
+}
+
+.catalog-card__img {
+  height: 135px;
+  width: 100%;
+  position: relative;
+  background: var(--surface-h);
+  overflow: hidden;
+}
+
+.catalog-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+
+.catalog-card:hover .catalog-card__img img {
+  transform: scale(1.05);
+}
+
+.catalog-card__badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(13,17,23,0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding: 3px 10px;
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.catalog-card__badge i {
+  color: var(--accent);
+}
+
+.catalog-card__body {
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.catalog-card__title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.catalog-card__desc {
+  font-size: .75rem;
+  color: var(--text-2);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.catalog-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.catalog-card__price {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--accent);
+}
+
+.catalog-card__btn {
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  background: var(--surface-h);
+  border: 1px solid var(--border);
+  color: var(--text);
+  transition: background .2s, border-color .2s;
+}
+
+.catalog-card:hover .catalog-card__btn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1a1000;
+}

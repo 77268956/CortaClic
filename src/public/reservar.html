@@ -26,7 +26,8 @@
     .barber-opt__avatar {
       width: 42px; height: 42px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; flex-shrink: 0;
+      font-size: 1.3rem; flex-shrink: 0; overflow: hidden;
+      background: var(--surface-h);
     }
     .barber-opt__name { font-family:'Outfit',sans-serif; font-weight:700; font-size:.92rem; }
     .barber-opt__spec { font-size:.75rem; color:var(--text-3); }
@@ -70,7 +71,9 @@
 </head>
 <body>
 
+  <!-- Mobile Header -->
   <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <!-- Desktop Navbar -->
   <div id="desktop-nav" class="d-none d-md-block"></div>
 
   <main class="page-container fade-up">
@@ -78,103 +81,92 @@
     <div class="page-hero">
       <p class="page-hero__tag"><i class="bi bi-calendar-plus mr-1"></i>Reserva</p>
       <h1 class="page-hero__title">Agendar tu Cita</h1>
-      <p class="page-hero__sub">Elige barbero, fecha y hora perfecta.</p>
+      <p class="page-hero__sub">Elige barbero, fecha y horario disponible.</p>
     </div>
 
     <!-- Service Banner -->
-    <div class="service-info-banner">
-      <div class="service-info-banner__icon g1">✂️</div>
+    <div class="service-info-banner mb-3" id="svc-banner">
+      <div class="service-info-banner__icon g1" style="overflow:hidden; width:56px; height:56px;">
+        <img id="svc-img" src="/img/default-service.svg" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null;this.src='/img/default-service.svg';">
+      </div>
       <div>
-        <div class="service-info-banner__title" id="svc-title">Corte Clásico</div>
+        <div class="service-info-banner__title" id="svc-title">Cargando servicio...</div>
         <div class="service-info-banner__meta">
-          <span class="service-info-banner__price" id="svc-price">$120 MXN</span>
+          <span class="service-info-banner__price" id="svc-price">$0.00</span>
           <span class="service-info-banner__dur" id="svc-dur">
-            <i class="bi bi-clock mr-1"></i>30 minutos
+            <i class="bi bi-clock mr-1"></i>0 min
           </span>
         </div>
       </div>
-      <a href="/servicios" class="ml-auto btn-ghost" style="padding:8px 14px; font-size:.8rem; white-space:nowrap;">
+      <a href="/servicios" class="ml-auto btn-ghost" style="padding:7px 12px; font-size:.8rem; white-space:nowrap;">
         <i class="bi bi-pencil"></i> Cambiar
       </a>
     </div>
 
+    <!-- Alert Box -->
+    <div class="cc-alert mb-3" id="booking-alert"></div>
+
     <!-- Card 1: Barbero -->
-    <div class="booking-card">
+    <div class="booking-card mb-3">
       <div class="booking-card__title">
         <i class="bi bi-person-badge"></i> Elige tu Barbero
       </div>
-      <div class="barber-opt selected" onclick="selectBarber(this)">
-        <div class="barber-opt__avatar g2">👨‍🦱</div>
-        <div>
-          <div class="barber-opt__name">Carlos Méndez</div>
-          <div class="barber-opt__spec">Fade Specialist · ⭐ 4.9</div>
+      <div id="barbers-list">
+        <!-- Option 1: Cualquier Barbero -->
+        <div class="barber-opt selected" data-id="any" onclick="selectBarber(this)">
+          <div class="barber-opt__avatar g2"><i class="bi bi-scissors" style="color:var(--accent);"></i></div>
+          <div>
+            <div class="barber-opt__name">Cualquier barbero disponible</div>
+            <div class="barber-opt__spec">Te asignamos automáticamente al primer barbero libre</div>
+          </div>
+          <i class="bi bi-check-circle-fill check"></i>
         </div>
-        <i class="bi bi-check-circle-fill check"></i>
-      </div>
-      <div class="barber-opt" onclick="selectBarber(this)">
-        <div class="barber-opt__avatar g4">🧔</div>
-        <div>
-          <div class="barber-opt__name">Roberto García</div>
-          <div class="barber-opt__spec">Barba &amp; Diseño · ⭐ 4.8</div>
-        </div>
-        <i class="bi bi-check-circle-fill check"></i>
-      </div>
-      <div class="barber-opt" onclick="selectBarber(this)">
-        <div class="barber-opt__avatar g5">👨‍🦳</div>
-        <div>
-          <div class="barber-opt__name">Miguel Torres</div>
-          <div class="barber-opt__spec">Cortes Clásicos · ⭐ 4.7</div>
-        </div>
-        <i class="bi bi-check-circle-fill check"></i>
+        <!-- Real barbers from DB will be inserted here -->
       </div>
     </div>
 
     <!-- Card 2: Fecha -->
-    <div class="booking-card">
+    <div class="booking-card mb-3">
       <div class="booking-card__title">
         <i class="bi bi-calendar3"></i> Selecciona la Fecha
       </div>
-      <div class="d-flex flex-wrap" style="gap:8px; margin-bottom:14px;">
-        <span class="day-pill selected" onclick="selectDay(this)" data-date="2026-08-11">Lun 11</span>
-        <span class="day-pill" onclick="selectDay(this)" data-date="2026-08-12">Mar 12</span>
-        <span class="day-pill" onclick="selectDay(this)" data-date="2026-08-13">Mié 13</span>
-        <span class="day-pill" onclick="selectDay(this)" data-date="2026-08-14">Jue 14</span>
-        <span class="day-pill" onclick="selectDay(this)" data-date="2026-08-15">Vie 15</span>
-      </div>
+      <p style="font-size:.78rem; color:var(--text-3); margin-bottom:10px;">
+        Fechas disponibles (no se permiten días pasados):
+      </p>
+      <!-- Quick day pills -->
+      <div class="d-flex flex-wrap" id="day-pills-container" style="gap:8px; margin-bottom:14px;"></div>
+      <!-- Custom date selector -->
       <div class="cc-group mb-0">
-        <label class="cc-label">O elige otra fecha</label>
-        <input type="date" id="custom-date" class="cc-input" min="2026-08-11" value="2026-08-11">
+        <label class="cc-label">O selecciona en el calendario</label>
+        <input type="date" id="custom-date" class="cc-input">
       </div>
     </div>
 
     <!-- Card 3: Horario -->
-    <div class="booking-card">
+    <div class="booking-card mb-3">
       <div class="booking-card__title">
-        <i class="bi bi-clock"></i> Elige el Horario
+        <i class="bi bi-clock"></i> Horarios Disponibles
       </div>
-      <div>
-        <p style="font-size:.75rem; color:var(--text-3); margin-bottom:10px;">
-          <i class="bi bi-circle-fill mr-1" style="color:var(--accent); font-size:.5rem"></i>Disponible
-          <i class="bi bi-circle-fill mr-1 ml-3" style="color:var(--text-3); font-size:.5rem"></i>Ocupado
-        </p>
-        <span class="time-slot" onclick="selectSlot(this)">09:00</span>
-        <span class="time-slot disabled">09:30</span>
-        <span class="time-slot" onclick="selectSlot(this)">10:00</span>
-        <span class="time-slot selected" onclick="selectSlot(this)">10:30</span>
-        <span class="time-slot disabled">11:00</span>
-        <span class="time-slot" onclick="selectSlot(this)">11:30</span>
-        <span class="time-slot" onclick="selectSlot(this)">14:00</span>
-        <span class="time-slot disabled">14:30</span>
-        <span class="time-slot" onclick="selectSlot(this)">15:00</span>
-        <span class="time-slot" onclick="selectSlot(this)">15:30</span>
-        <span class="time-slot disabled">16:00</span>
-        <span class="time-slot" onclick="selectSlot(this)">16:30</span>
+      <p style="font-size:.75rem; color:var(--text-3); margin-bottom:10px;">
+        <i class="bi bi-circle-fill mr-1" style="color:var(--accent); font-size:.5rem"></i>Disponible
+        <i class="bi bi-circle-fill mr-1 ml-3" style="color:var(--text-3); font-size:.5rem"></i>Ocupado / Pasado
+      </p>
+
+      <div id="loading-slots" class="text-center py-3">
+        <span class="btn-spinner mb-1"></span>
+        <p style="font-size:.8rem; color:var(--text-3);">Consultando disponibilidad...</p>
+      </div>
+
+      <div id="slots-container" class="d-none"></div>
+
+      <div id="no-slots" class="d-none text-center py-3" style="color:var(--text-3); font-size:.85rem;">
+        <i class="bi bi-exclamation-triangle d-block mb-1" style="font-size:1.5rem;"></i>
+        No hay horarios disponibles para esta fecha o barbero. Intenta con otro día.
       </div>
     </div>
 
     <!-- Confirm Button -->
-    <button class="btn-accent w-100 mt-2" style="justify-content:center; padding:14px;"
-            data-toggle="modal" data-target="#successModal">
+    <button id="btn-confirm-booking" class="btn-accent w-100 mt-2" style="justify-content:center; padding:14px;" onclick="confirmBooking()">
       <i class="bi bi-check-circle"></i> Confirmar Reserva
     </button>
 
@@ -186,13 +178,39 @@
   <div class="modal fade" id="successModal" tabindex="-1" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-center">
-        <div class="modal-body" style="padding:36px 24px;">
-          <div style="font-size:3.5rem; margin-bottom:16px;">✅</div>
+        <div class="modal-body" style="padding:32px 24px;">
+          <div style="font-size:3.5rem; margin-bottom:12px;">✅</div>
           <h2 class="modal-title mb-2">¡Cita Agendada!</h2>
-          <p style="color:var(--text-2); font-size:.9rem; margin-bottom:24px;">
-            Tu reserva fue confirmada. Te esperamos puntual.
+          <p style="color:var(--text-2); font-size:.88rem; margin-bottom:16px;">
+            Tu reserva fue registrada con éxito en el sistema.
           </p>
-          <a href="/mis-citas" class="btn-accent" style="justify-content:center;">
+
+          <!-- Appointment summary card -->
+          <div class="info-card text-left mb-3" style="background:var(--surface-s); font-size:.85rem;">
+            <div class="info-row" style="padding:10px 14px;">
+              <span class="info-row__label"><i class="bi bi-scissors"></i> Servicio</span>
+              <span class="info-row__value" id="res-service-name">—</span>
+            </div>
+            <div class="info-row" style="padding:10px 14px;">
+              <span class="info-row__label"><i class="bi bi-person-badge"></i> Barbero</span>
+              <span class="info-row__value" id="res-barber-name">—</span>
+            </div>
+            <div class="info-row" style="padding:10px 14px;">
+              <span class="info-row__label"><i class="bi bi-calendar3"></i> Fecha y Hora</span>
+              <span class="info-row__value" id="res-datetime">—</span>
+            </div>
+            <div class="info-row" style="padding:10px 14px;">
+              <span class="info-row__label"><i class="bi bi-tag"></i> Total</span>
+              <span class="info-row__value" id="res-total" style="color:var(--accent); font-weight:700;">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Prepared WhatsApp notification button -->
+          <a id="btn-whatsapp" href="#" target="_blank" class="btn-outline-a w-100 mb-2" style="justify-content:center; padding:10px; font-size:.85rem;">
+            <i class="bi bi-whatsapp"></i> Recordatorio por WhatsApp
+          </a>
+
+          <a href="/mis-citas" class="btn-accent w-100" style="justify-content:center;">
             <i class="bi bi-calendar-check"></i> Ver Mis Citas
           </a>
         </div>
@@ -204,31 +222,268 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/site.js"></script>
   <script>
+    // Protect page (only logged in clients)
     CC.requireAuth([2]);
 
+    let selectedService = null;
+    let selectedBarberId = 'any';
+    let selectedDate = '';
+    let selectedTime = '';
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async () => {
+      setupDateRange();
+      await loadServiceInfo();
+      await loadBarbers();
+      await fetchAvailability();
+    });
+
+    // Helper: Dollar formatting ($)
+    function formatDollars(val) {
+      return `$${(parseFloat(val) || 0).toFixed(2)}`;
+    }
+
+    // Set up Date Picker & Quick Day Pills (Next 6 Days starting TODAY)
+    function setupDateRange() {
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      
+      const customDateEl = document.getElementById('custom-date');
+      customDateEl.min = todayStr; // Rule: No past dates!
+      customDateEl.value = todayStr;
+      selectedDate = todayStr;
+
+      // Generate 6 day pills
+      const pillsContainer = document.getElementById('day-pills-container');
+      pillsContainer.innerHTML = '';
+
+      const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+      for (let i = 0; i < 6; i++) {
+        const d = new Date();
+        d.setDate(today.getDate() + i);
+        const dStr = d.toISOString().split('T')[0];
+        const dayLabel = i === 0 ? 'Hoy' : i === 1 ? 'Mañana' : `${dayNames[d.getDay()]} ${d.getDate()}`;
+
+        const pill = document.createElement('span');
+        pill.className = `day-pill ${i === 0 ? 'selected' : ''}`;
+        pill.dataset.date = dStr;
+        pill.textContent = dayLabel;
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('selected'));
+          pill.classList.add('selected');
+          customDateEl.value = dStr;
+          selectedDate = dStr;
+          fetchAvailability();
+        });
+
+        pillsContainer.appendChild(pill);
+      }
+
+      // Sync custom date picker changes
+      customDateEl.addEventListener('change', function () {
+        if (this.value < todayStr) {
+          this.value = todayStr;
+        }
+        selectedDate = this.value;
+
+        // Sync pill selection
+        document.querySelectorAll('.day-pill').forEach(p => {
+          p.classList.toggle('selected', p.dataset.date === this.value);
+        });
+
+        fetchAvailability();
+      });
+    }
+
+    // Load Service Info from URL ?id=X
+    async function loadServiceInfo() {
+      const params = new URLSearchParams(window.location.search);
+      const svcId = params.get('id');
+
+      try {
+        let res;
+        if (svcId) {
+          res = await fetch(`/api/servicios/${svcId}`);
+        } else {
+          res = await fetch('/api/servicios');
+        }
+        const data = await res.json();
+
+        if (data.ok) {
+          if (svcId && data.servicio) {
+            selectedService = data.servicio;
+          } else if (Array.isArray(data.servicios) && data.servicios.length > 0) {
+            selectedService = data.servicios[0];
+          }
+        }
+
+        if (selectedService) {
+          document.getElementById('svc-title').textContent = selectedService.nombre;
+          document.getElementById('svc-price').textContent = formatDollars(selectedService.precio);
+          document.getElementById('svc-dur').innerHTML = `<i class="bi bi-clock mr-1"></i>${selectedService.duracion_minutos} min`;
+          
+          if (selectedService.imagen) {
+            document.getElementById('svc-img').src = selectedService.imagen;
+          }
+        } else {
+          window.location.href = '/servicios';
+        }
+      } catch (err) {
+        console.error('Error al cargar servicio:', err);
+      }
+    }
+
+    // Load Barbers from DB
+    async function loadBarbers() {
+      try {
+        const res = await fetch('/api/barberos');
+        const data = await res.json();
+
+        const barbersList = document.getElementById('barbers-list');
+
+        if (data.ok && Array.isArray(data.barberos)) {
+          data.barberos.forEach(b => {
+            const opt = document.createElement('div');
+            opt.className = 'barber-opt';
+            opt.dataset.id = b.id;
+            opt.innerHTML = `
+              <div class="barber-opt__avatar g1"><i class="bi bi-person"></i></div>
+              <div>
+                <div class="barber-opt__name">${escapeHtml(b.nombre)}</div>
+                <div class="barber-opt__spec">${escapeHtml(b.especialidad || 'Especialista en barbería')}</div>
+              </div>
+              <i class="bi bi-check-circle-fill check"></i>
+            `;
+            opt.addEventListener('click', () => selectBarber(opt));
+            barbersList.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.error('Error al cargar barberos:', err);
+      }
+    }
+
+    // Select Barber handler
     function selectBarber(el) {
       document.querySelectorAll('.barber-opt').forEach(b => b.classList.remove('selected'));
       el.classList.add('selected');
+      selectedBarberId = el.dataset.id;
+      fetchAvailability();
     }
 
-    function selectDay(el) {
-      document.querySelectorAll('.day-pill').forEach(d => d.classList.remove('selected'));
-      el.classList.add('selected');
-      document.getElementById('custom-date').value = el.dataset.date;
+    // Fetch Availability for selected date, barber and service
+    async function fetchAvailability() {
+      if (!selectedService || !selectedDate) return;
+
+      const loader = document.getElementById('loading-slots');
+      const container = document.getElementById('slots-container');
+      const noSlots = document.getElementById('no-slots');
+
+      loader.classList.remove('d-none');
+      container.classList.add('d-none');
+      noSlots.classList.add('d-none');
+      selectedTime = '';
+
+      try {
+        const url = `/api/citas/disponibilidad?barbero_id=${selectedBarberId}&fecha=${selectedDate}&servicio_id=${selectedService.id}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        loader.classList.add('d-none');
+
+        if (data.ok && Array.isArray(data.slots) && data.slots.length > 0) {
+          container.innerHTML = '';
+          let availableCount = 0;
+
+          data.slots.forEach(s => {
+            const slotEl = document.createElement('span');
+            slotEl.className = `time-slot ${s.disponible ? '' : 'disabled'}`;
+            slotEl.textContent = s.hora;
+
+            if (s.disponible) {
+              availableCount++;
+              slotEl.addEventListener('click', () => {
+                document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+                slotEl.classList.add('selected');
+                selectedTime = s.hora;
+                CC.hideAlert('booking-alert');
+              });
+            }
+
+            container.appendChild(slotEl);
+          });
+
+          if (availableCount > 0) {
+            container.classList.remove('d-none');
+          } else {
+            noSlots.classList.remove('d-none');
+          }
+        } else {
+          noSlots.classList.remove('d-none');
+        }
+      } catch (err) {
+        console.error('Error al obtener disponibilidad:', err);
+        loader.classList.add('d-none');
+        noSlots.classList.remove('d-none');
+      }
     }
 
-    function selectSlot(el) {
-      if (el.classList.contains('disabled')) return;
-      document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-      el.classList.add('selected');
+    // Confirm Booking Function
+    async function confirmBooking() {
+      if (!selectedTime) {
+        return CC.showAlert('booking-alert', 'Por favor selecciona un horario disponible de la lista.', 'err');
+      }
+
+      CC.hideAlert('booking-alert');
+      CC.setLoading('btn-confirm-booking', true);
+
+      try {
+        const token = CC.getToken();
+        const res = await fetch('/api/citas', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            servicio_id: selectedService.id,
+            barbero_id: selectedBarberId,
+            fecha: selectedDate,
+            hora: selectedTime
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          // Fill success modal summary
+          document.getElementById('res-service-name').textContent = data.cita.servicioNombre;
+          document.getElementById('res-barber-name').textContent  = data.cita.barberoNombre;
+          document.getElementById('res-datetime').textContent    = `${data.cita.fecha} · ${data.cita.hora} hs`;
+          document.getElementById('res-total').textContent       = formatDollars(data.cita.servicioPrecio);
+
+          // Build WhatsApp Notification Link (Prepared for future automation)
+          const waMessage = `Hola CortaClic! Confirmación de mi cita:\n✂️ Servicio: ${data.cita.servicioNombre}\n👨‍🦱 Barbero: ${data.cita.barberoNombre}\n📅 Fecha: ${data.cita.fecha}\n⏰ Hora: ${data.cita.hora} hs\n💵 Total: ${formatDollars(data.cita.servicioPrecio)}`;
+          document.getElementById('btn-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(waMessage)}`;
+
+          $('#successModal').modal('show');
+        } else {
+          CC.showAlert('booking-alert', data.message || 'No se pudo agendar la cita. Intenta con otro horario.', 'err');
+        }
+      } catch (err) {
+        console.error('Error al agendar cita:', err);
+        CC.showAlert('booking-alert', 'Error de conexión. Intenta de nuevo.', 'err');
+      } finally {
+        CC.setLoading('btn-confirm-booking', false, '<i class="bi bi-check-circle"></i> Confirmar Reserva');
+      }
     }
 
-    // Sync custom date input with day pills
-    document.getElementById('custom-date').addEventListener('change', function() {
-      document.querySelectorAll('.day-pill').forEach(d => {
-        d.classList.toggle('selected', d.dataset.date === this.value);
-      });
-    });
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
   </script>
 </body>
 </html>
