@@ -43,7 +43,7 @@
 
       <!-- Logo -->
       <div class="auth-logo">
-        <div class="auth-logo__icon"></div>
+        <div class="auth-logo__icon">✂️</div>
         <h1>Corta<span class="acc">Clic</span></h1>
         <p>Tu barbería digital</p>
       </div>
@@ -169,15 +169,11 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/site.js"></script>
   <script>
-    // If already logged in, go home
     document.addEventListener('DOMContentLoaded', () => {
       CC.redirectIfLoggedIn('/');
-
-      // Check for ?tab=register in URL
       if (window.location.hash === '#registro') switchTab('register');
     });
 
-    // Tab switching
     function switchTab(tab) {
       const isLogin = tab === 'login';
       document.getElementById('form-login').style.display    = isLogin ? '' : 'none';
@@ -188,7 +184,6 @@
       CC.hideAlert('alert-register');
     }
 
-    // ── Login ──
     async function doLogin() {
       const email = document.getElementById('login-email').value.trim();
       const pass  = document.getElementById('login-pass').value;
@@ -204,9 +199,9 @@
         const data = await CC.apiLogin(email, pass);
         if (data.ok) {
           CC.saveSession(data.token, data.user);
-          // Redirect: check ?next= param
           const params = new URLSearchParams(window.location.search);
-          window.location.href = params.get('next') || '/';
+          const target = data.user.rol === 0 ? '/admin/dashboard' : (params.get('next') || '/');
+          window.location.href = target;
         } else {
           CC.showAlert('alert-login', data.message || 'Credenciales incorrectas.', 'err');
         }
@@ -217,7 +212,6 @@
       }
     }
 
-    // ── Register ──
     async function doRegister() {
       const nombre = document.getElementById('reg-nombre').value.trim();
       const email  = document.getElementById('reg-email').value.trim();
@@ -249,7 +243,6 @@
       }
     }
 
-    // Allow Enter key to submit
     document.addEventListener('keydown', e => {
       if (e.key !== 'Enter') return;
       const loginVisible = document.getElementById('form-login').style.display !== 'none';

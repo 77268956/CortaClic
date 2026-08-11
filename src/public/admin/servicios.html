@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestionar servicios del catálogo – CortaClic Admin.">
+  <title>Servicios – CortaClic Admin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <div class="admin-page-header">
+      <div>
+        <p class="page-hero__tag"><i class="bi bi-scissors mr-1"></i>Catálogo</p>
+        <h1 class="page-hero__title">Servicios</h1>
+      </div>
+      <button class="btn-accent" onclick="openServiceModal()">
+        <i class="bi bi-plus-lg"></i> Nuevo
+      </button>
+    </div>
+
+    <div class="cc-alert mb-3" id="svc-alert"></div>
+
+    <!-- Loading -->
+    <div id="loading-svcs" class="text-center py-4">
+      <span class="btn-spinner mb-2" style="width:28px;height:28px;border-width:3px;"></span>
+      <p style="font-size:.85rem;color:var(--text-3);">Cargando servicios...</p>
+    </div>
+
+    <!-- Grid list -->
+    <div id="svcs-list" class="row" style="display:none; margin:0 -6px;"></div>
+
+    <!-- Empty -->
+    <div class="empty-state d-none" id="empty-svcs">
+      <i class="bi bi-scissors d-block"></i>
+      <h3>Sin servicios</h3>
+      <p>Aún no hay servicios. ¡Agrega el primero al catálogo!</p>
+      <button class="btn-accent" onclick="openServiceModal()"><i class="bi bi-plus-lg"></i> Agregar servicio</button>
+    </div>
+
+  </main>
+
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <!-- ══ Modal Servicio ══ -->
+  <div class="modal fade" id="svcModal" tabindex="-1" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title font-weight-bold" id="svc-modal-title">Nuevo Servicio</h5>
+          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="cc-alert mb-3" id="svc-form-alert"></div>
+          <input type="hidden" id="svc-id">
+
+          <!-- Image Preview -->
+          <div class="admin-img-preview-wrap mb-3">
+            <div class="admin-img-preview" id="img-preview">
+              <img src="/img/default-service.svg" id="img-preview-el" alt="preview" onerror="this.src='/img/default-service.svg'">
+            </div>
+            <div class="admin-img-actions">
+              <div class="cc-group mb-0">
+                <label class="cc-label">URL de imagen</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-link-45deg"></i>
+                  <input type="url" id="svc-imagen" class="cc-input" placeholder="https://..." oninput="previewImage(this.value)">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Name -->
+          <div class="cc-group">
+            <label class="cc-label">Nombre del servicio *</label>
+            <div class="cc-input-icon">
+              <i class="bi bi-scissors"></i>
+              <input type="text" id="svc-nombre" class="cc-input" placeholder="Ej: Corte Clásico">
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="cc-group">
+            <label class="cc-label">Descripción</label>
+            <textarea id="svc-descripcion" class="cc-input" rows="3"
+              placeholder="Describe brevemente el servicio..."
+              style="resize:none; height:auto; padding-top:12px; padding-bottom:12px;"></textarea>
+          </div>
+
+          <!-- Price & Duration -->
+          <div class="row">
+            <div class="col-6">
+              <div class="cc-group">
+                <label class="cc-label">Precio (USD) *</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-currency-dollar"></i>
+                  <input type="number" id="svc-precio" class="cc-input" placeholder="0.00" min="0" step="0.01">
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="cc-group">
+                <label class="cc-label">Duración (min) *</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-clock"></i>
+                  <input type="number" id="svc-duracion" class="cc-input" placeholder="30" min="5" step="5">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active -->
+          <div class="cc-group">
+            <label class="cc-label">Estado</label>
+            <div class="toggle-row">
+              <label class="toggle-switch">
+                <input type="checkbox" id="svc-activo" checked>
+                <span class="toggle-thumb"></span>
+              </label>
+              <span id="svc-activo-label" style="font-size:.88rem; color:var(--text-2);">Servicio Activo</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn-ghost mr-2" data-dismiss="modal">Cancelar</button>
+          <button class="btn-accent" id="btn-save-svc" onclick="saveService()">
+            <i class="bi bi-check-lg"></i> Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm -->
+  <div class="modal fade" id="deleteSvcModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content text-center">
+        <div class="modal-body" style="padding:32px 20px;">
+          <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
+          <h5 style="font-family:'Outfit',sans-serif; font-weight:700; margin-bottom:8px;">¿Eliminar servicio?</h5>
+          <p style="font-size:.85rem; color:var(--text-3); margin-bottom:20px;">Esta acción no se puede deshacer.</p>
+          <input type="hidden" id="delete-svc-id">
+          <div class="d-flex justify-content-center" style="gap:10px;">
+            <button class="btn-ghost" data-dismiss="modal">Cancelar</button>
+            <button class="btn-danger-ghost" onclick="confirmDeleteService()">
+              <i class="bi bi-trash mr-1"></i>Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    CC.requireAuth([0]);
+
+    let editingId = null;
+
+    document.getElementById('svc-activo').addEventListener('change', function () {
+      document.getElementById('svc-activo-label').textContent =
+        this.checked ? 'Servicio Activo' : 'Servicio Inactivo';
+    });
+
+    document.addEventListener('DOMContentLoaded', loadServices);
+
+    function previewImage(url) {
+      const el = document.getElementById('img-preview-el');
+      el.src = url || '/img/default-service.svg';
+    }
+
+    /* ── Load ───────────────────────────────────────── */
+    async function loadServices() {
+      const loader = document.getElementById('loading-svcs');
+      const listEl = document.getElementById('svcs-list');
+      const emptyEl = document.getElementById('empty-svcs');
+
+      loader.style.display = 'block';
+      listEl.style.display = 'none';
+      emptyEl.classList.add('d-none');
+
+      try {
+        const token = CC.getToken();
+        const res = await fetch('/api/admin/servicios', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        loader.style.display = 'none';
+
+        if (data.ok && data.servicios.length > 0) {
+          renderServices(data.servicios);
+          listEl.style.display = 'flex';
+        } else {
+          emptyEl.classList.remove('d-none');
+        }
+      } catch (e) {
+        loader.style.display = 'none';
+        emptyEl.classList.remove('d-none');
+      }
+    }
+
+    function renderServices(list) {
+      const listEl = document.getElementById('svcs-list');
+      listEl.innerHTML = list.map(s => {
+        const img = s.imagen || '/img/default-service.svg';
+        return `
+          <div class="col-12 col-md-6 col-lg-4 px-2 mb-3">
+            <div class="admin-svc-card">
+              <div class="admin-svc-card__img">
+                <img src="${esc(img)}" alt="${esc(s.nombre)}"
+                     onerror="this.onerror=null;this.src='/img/default-service.svg';">
+                ${!s.activo ? '<span class="admin-badge-inactive">Inactivo</span>' : ''}
+              </div>
+              <div class="admin-svc-card__body">
+                <div class="admin-svc-card__name">${esc(s.nombre)}</div>
+                <div class="admin-svc-card__meta">
+                  <span class="text-warning font-weight-bold">$${parseFloat(s.precio).toFixed(2)}</span>
+                  <span style="color:var(--text-3);">· ${s.duracion_minutos} min</span>
+                </div>
+                <div class="admin-svc-card__desc">${esc(s.descripcion || '—')}</div>
+                <div class="admin-svc-card__actions">
+                  <button class="btn-ghost" style="flex:1; padding:8px; font-size:.8rem;" onclick="editService(${s.id})">
+                    <i class="bi bi-pencil mr-1"></i>Editar
+                  </button>
+                  <button class="btn-danger-ghost ml-1" style="padding:8px 12px;" onclick="promptDeleteService(${s.id})">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ── Open Modal ─────────────────────────────────── */
+    function openServiceModal(data = null) {
+      CC.hideAlert('svc-form-alert');
+      editingId = data ? data.id : null;
+      document.getElementById('svc-modal-title').textContent = data ? 'Editar Servicio' : 'Nuevo Servicio';
+      document.getElementById('svc-id').value            = data ? data.id : '';
+      document.getElementById('svc-nombre').value        = data ? data.nombre : '';
+      document.getElementById('svc-descripcion').value   = data ? (data.descripcion || '') : '';
+      document.getElementById('svc-imagen').value        = data ? (data.imagen || '') : '';
+      document.getElementById('svc-precio').value        = data ? data.precio : '';
+      document.getElementById('svc-duracion').value      = data ? data.duracion_minutos : '';
+      document.getElementById('svc-activo').checked      = data ? !!data.activo : true;
+      document.getElementById('svc-activo-label').textContent = data && !data.activo ? 'Servicio Inactivo' : 'Servicio Activo';
+      previewImage(data ? data.imagen : null);
+      $('#svcModal').modal('show');
+    }
+
+    /* ── Edit ───────────────────────────────────────── */
+    async function editService(id) {
+      try {
+        const token = CC.getToken();
+        const res = await fetch(`/api/admin/servicios/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.ok) openServiceModal(data.servicio);
+      } catch (e) {
+        CC.showAlert('svc-alert', 'Error al cargar el servicio.', 'err');
+      }
+    }
+
+    /* ── Save ───────────────────────────────────────── */
+    async function saveService() {
+      const id          = document.getElementById('svc-id').value;
+      const nombre      = document.getElementById('svc-nombre').value.trim();
+      const descripcion = document.getElementById('svc-descripcion').value.trim();
+      const imagen      = document.getElementById('svc-imagen').value.trim();
+      const precio      = parseFloat(document.getElementById('svc-precio').value);
+      const duracion    = parseInt(document.getElementById('svc-duracion').value);
+      const activo      = document.getElementById('svc-activo').checked;
+
+      if (!nombre)           return CC.showAlert('svc-form-alert', 'El nombre es requerido.', 'err');
+      if (isNaN(precio))     return CC.showAlert('svc-form-alert', 'El precio es requerido.', 'err');
+      if (isNaN(duracion))   return CC.showAlert('svc-form-alert', 'La duración es requerida.', 'err');
+
+      CC.hideAlert('svc-form-alert');
+      CC.setLoading('btn-save-svc', true);
+
+      try {
+        const token  = CC.getToken();
+        const url    = editingId ? `/api/admin/servicios/${id}` : '/api/admin/servicios';
+        const method = editingId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ nombre, descripcion, imagen, precio, duracion_minutos: duracion, activo }),
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          $('#svcModal').modal('hide');
+          CC.showAlert('svc-alert', `Servicio ${editingId ? 'actualizado' : 'creado'} exitosamente.`, 'ok');
+          loadServices();
+        } else {
+          CC.showAlert('svc-form-alert', data.message || 'Error al guardar.', 'err');
+        }
+      } catch (e) {
+        CC.showAlert('svc-form-alert', 'Error de conexión.', 'err');
+      } finally {
+        CC.setLoading('btn-save-svc', false, '<i class="bi bi-check-lg"></i> Guardar');
+      }
+    }
+
+    /* ── Delete ─────────────────────────────────────── */
+    function promptDeleteService(id) {
+      document.getElementById('delete-svc-id').value = id;
+      $('#deleteSvcModal').modal('show');
+    }
+
+    async function confirmDeleteService() {
+      const id = document.getElementById('delete-svc-id').value;
+      try {
+        const token = CC.getToken();
+        const res = await fetch(`/api/admin/servicios/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        $('#deleteSvcModal').modal('hide');
+        if (data.ok) {
+          CC.showAlert('svc-alert', 'Servicio eliminado.', 'ok');
+          loadServices();
+        } else {
+          CC.showAlert('svc-alert', data.message || 'No se pudo eliminar.', 'err');
+        }
+      } catch (e) {
+        CC.showAlert('svc-alert', 'Error de conexión.', 'err');
+        $('#deleteSvcModal').modal('hide');
+      }
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestionar barberos y sus horarios – CortaClic Admin.">
+  <title>Barberos – CortaClic Admin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <div class="admin-page-header">
+      <div>
+        <p class="page-hero__tag"><i class="bi bi-people mr-1"></i>Gestión</p>
+        <h1 class="page-hero__title">Barberos</h1>
+      </div>
+      <button class="btn-accent" id="btn-new-barber" onclick="openBarberModal()">
+        <i class="bi bi-plus-lg"></i> Nuevo
+      </button>
+    </div>
+
+    <div class="cc-alert mb-3" id="barberos-alert"></div>
+
+    <!-- Loading -->
+    <div id="loading-barberos" class="text-center py-4">
+      <span class="btn-spinner mb-2" style="width:28px;height:28px;border-width:3px;"></span>
+      <p style="font-size:.85rem;color:var(--text-3);">Cargando barberos...</p>
+    </div>
+
+    <!-- List -->
+    <div id="barberos-list" style="display:none;"></div>
+
+    <!-- Empty -->
+    <div class="empty-state d-none" id="empty-barberos">
+      <i class="bi bi-person-x d-block"></i>
+      <h3>Sin barberos</h3>
+      <p>Aún no hay barberos registrados. ¡Agrega el primero!</p>
+      <button class="btn-accent" onclick="openBarberModal()"><i class="bi bi-plus-lg"></i> Agregar barbero</button>
+    </div>
+
+  </main>
+
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <!-- ══ Modal Barbero ══ -->
+  <div class="modal fade" id="barberModal" tabindex="-1" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title font-weight-bold" id="barber-modal-title">Nuevo Barbero</h5>
+          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="cc-alert mb-3" id="barber-form-alert"></div>
+
+          <input type="hidden" id="barber-id">
+
+          <!-- Name & Phone -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="cc-group">
+                <label class="cc-label">Nombre completo *</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-person"></i>
+                  <input type="text" id="barber-nombre" class="cc-input" placeholder="Ej: Juan García">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="cc-group">
+                <label class="cc-label">Teléfono</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-phone"></i>
+                  <input type="tel" id="barber-telefono" class="cc-input" placeholder="+52 55 0000 0000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email & Especialidad -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="cc-group">
+                <label class="cc-label">Email</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-envelope"></i>
+                  <input type="email" id="barber-email" class="cc-input" placeholder="barbero@email.com">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="cc-group">
+                <label class="cc-label">Especialidad</label>
+                <div class="cc-input-icon">
+                  <i class="bi bi-award"></i>
+                  <input type="text" id="barber-especialidad" class="cc-input" placeholder="Ej: Cortes clásicos">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Status -->
+          <div class="cc-group">
+            <label class="cc-label">Estado</label>
+            <div class="toggle-row">
+              <label class="toggle-switch">
+                <input type="checkbox" id="barber-activo" checked>
+                <span class="toggle-thumb"></span>
+              </label>
+              <span id="barber-activo-label" style="font-size:.88rem; color:var(--text-2);">Barbero Activo</span>
+            </div>
+          </div>
+
+          <hr style="border-color:var(--border); margin: 20px 0;">
+
+          <!-- Horarios Section -->
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.95rem; margin:0;">
+              <i class="bi bi-clock mr-1" style="color:var(--accent)"></i> Horarios de Trabajo
+            </h6>
+            <button class="btn-ghost" style="padding:6px 12px; font-size:.78rem;" onclick="addHorarioRow()">
+              <i class="bi bi-plus-lg mr-1"></i> Agregar día
+            </button>
+          </div>
+
+          <div id="horarios-container"></div>
+
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn-ghost mr-2" data-dismiss="modal">Cancelar</button>
+          <button class="btn-accent" id="btn-save-barber" onclick="saveBarber()">
+            <i class="bi bi-check-lg"></i> Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal Confirmar Eliminación ══ -->
+  <div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content text-center">
+        <div class="modal-body" style="padding:32px 20px;">
+          <div style="font-size:2.5rem; margin-bottom:12px;">⚠️</div>
+          <h5 style="font-family:'Outfit',sans-serif; font-weight:700; margin-bottom:8px;">¿Eliminar barbero?</h5>
+          <p style="font-size:.85rem; color:var(--text-3); margin-bottom:20px;">Esta acción no se puede deshacer.</p>
+          <input type="hidden" id="delete-barber-id">
+          <div class="d-flex justify-content-center" style="gap:10px;">
+            <button class="btn-ghost" data-dismiss="modal">Cancelar</button>
+            <button class="btn-danger-ghost" id="btn-confirm-delete" onclick="confirmDeleteBarber()">
+              <i class="bi bi-trash mr-1"></i>Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    CC.requireAuth([0]);
+
+    const DIAS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+    const DIA_VALS = [1, 2, 3, 4, 5, 6, 0];
+
+    let editing = false;
+
+    document.addEventListener('DOMContentLoaded', loadBarberos);
+
+    document.getElementById('barber-activo').addEventListener('change', function () {
+      document.getElementById('barber-activo-label').textContent =
+        this.checked ? 'Barbero Activo' : 'Barbero Inactivo';
+    });
+
+    /* ── Load list ──────────────────────────────────── */
+    async function loadBarberos() {
+      const loader = document.getElementById('loading-barberos');
+      const listEl = document.getElementById('barberos-list');
+      const emptyEl = document.getElementById('empty-barberos');
+
+      loader.style.display = 'block';
+      listEl.style.display = 'none';
+      emptyEl.classList.add('d-none');
+
+      try {
+        const token = CC.getToken();
+        const res = await fetch('/api/admin/barberos', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        loader.style.display = 'none';
+
+        if (data.ok && data.barberos.length > 0) {
+          renderBarberos(data.barberos);
+          listEl.style.display = 'block';
+        } else {
+          emptyEl.classList.remove('d-none');
+        }
+      } catch (e) {
+        console.error(e);
+        loader.style.display = 'none';
+        emptyEl.classList.remove('d-none');
+      }
+    }
+
+    function renderBarberos(list) {
+      const listEl = document.getElementById('barberos-list');
+      listEl.innerHTML = list.map(b => `
+        <div class="admin-list-item">
+          <div class="admin-list-item__avatar g${(b.id % 5) + 1}">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div class="admin-list-item__info">
+            <div class="admin-list-item__name">${esc(b.nombre)}</div>
+            <div class="admin-list-item__sub">${esc(b.especialidad || 'Sin especialidad')} ${b.activo ? '<span class="sbadge sbadge-confirm ml-1">Activo</span>' : '<span class="sbadge sbadge-cancel ml-1">Inactivo</span>'}</div>
+          </div>
+          <div class="admin-list-item__actions">
+            <button class="icon-btn-sm" title="Editar" onclick="editBarber(${b.id})">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="icon-btn-sm danger" title="Eliminar" onclick="promptDeleteBarber(${b.id})">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ── Open / Reset Modal ─────────────────────────── */
+    function openBarberModal(data = null) {
+      CC.hideAlert('barber-form-alert');
+      editing = !!data;
+
+      document.getElementById('barber-modal-title').textContent = data ? 'Editar Barbero' : 'Nuevo Barbero';
+      document.getElementById('barber-id').value           = data ? data.id : '';
+      document.getElementById('barber-nombre').value       = data ? data.nombre : '';
+      document.getElementById('barber-telefono').value     = data ? (data.telefono || '') : '';
+      document.getElementById('barber-email').value        = data ? (data.email || '') : '';
+      document.getElementById('barber-especialidad').value = data ? (data.especialidad || '') : '';
+      document.getElementById('barber-activo').checked     = data ? !!data.activo : true;
+      document.getElementById('barber-activo-label').textContent = data && !data.activo ? 'Barbero Inactivo' : 'Barbero Activo';
+
+      // Render horarios
+      const container = document.getElementById('horarios-container');
+      container.innerHTML = '';
+
+      if (data && data.horarios && data.horarios.length > 0) {
+        data.horarios.forEach(h => addHorarioRow(h));
+      }
+
+      $('#barberModal').modal('show');
+    }
+
+    function addHorarioRow(horario = null) {
+      const container = document.getElementById('horarios-container');
+      const row = document.createElement('div');
+      row.className = 'horario-row mb-2';
+
+      const diaOptions = DIA_VALS.map((v, i) =>
+        `<option value="${v}" ${horario && horario.dia_semana === v ? 'selected' : ''}>${DIAS[i]}</option>`
+      ).join('');
+
+      row.innerHTML = `
+        <div class="d-flex align-items-center flex-wrap" style="gap:8px;">
+          <select class="cc-input h-dia" style="flex:1; min-width:110px; max-width:140px;">
+            ${diaOptions}
+          </select>
+          <div class="cc-input-icon" style="flex:1; min-width:100px;">
+            <i class="bi bi-clock"></i>
+            <input type="time" class="cc-input h-inicio" value="${horario ? horario.hora_inicio : '09:00'}">
+          </div>
+          <span style="color:var(--text-3); font-size:.8rem;">a</span>
+          <div class="cc-input-icon" style="flex:1; min-width:100px;">
+            <i class="bi bi-clock-fill"></i>
+            <input type="time" class="cc-input h-fin" value="${horario ? horario.hora_fin : '19:00'}">
+          </div>
+          <button type="button" class="icon-btn-sm danger flex-shrink-0" onclick="this.closest('.horario-row').remove()">
+            <i class="bi bi-dash-lg"></i>
+          </button>
+        </div>
+      `;
+      container.appendChild(row);
+    }
+
+    /* ── Edit ───────────────────────────────────────── */
+    async function editBarber(id) {
+      try {
+        const token = CC.getToken();
+        const res = await fetch(`/api/admin/barberos/${id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.ok) openBarberModal(data.barbero);
+      } catch (e) {
+        CC.showAlert('barberos-alert', 'Error al cargar datos del barbero.', 'err');
+      }
+    }
+
+    /* ── Save ───────────────────────────────────────── */
+    async function saveBarber() {
+      const id           = document.getElementById('barber-id').value;
+      const nombre       = document.getElementById('barber-nombre').value.trim();
+      const telefono     = document.getElementById('barber-telefono').value.trim();
+      const email        = document.getElementById('barber-email').value.trim();
+      const especialidad = document.getElementById('barber-especialidad').value.trim();
+      const activo       = document.getElementById('barber-activo').checked;
+
+      if (!nombre) return CC.showAlert('barber-form-alert', 'El nombre del barbero es requerido.', 'err');
+
+      const horarios = [];
+      document.querySelectorAll('.horario-row').forEach(row => {
+        const dia    = parseInt(row.querySelector('.h-dia').value);
+        const inicio = row.querySelector('.h-inicio').value;
+        const fin    = row.querySelector('.h-fin').value;
+        if (inicio && fin) horarios.push({ dia_semana: dia, hora_inicio: inicio, hora_fin: fin });
+      });
+
+      CC.hideAlert('barber-form-alert');
+      CC.setLoading('btn-save-barber', true);
+
+      try {
+        const token = CC.getToken();
+        const url    = editing ? `/api/admin/barberos/${id}` : '/api/admin/barberos';
+        const method = editing ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ nombre, telefono, email, especialidad, activo, horarios }),
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          $('#barberModal').modal('hide');
+          CC.showAlert('barberos-alert', `Barbero ${editing ? 'actualizado' : 'creado'} exitosamente.`, 'ok');
+          loadBarberos();
+        } else {
+          CC.showAlert('barber-form-alert', data.message || 'Error al guardar.', 'err');
+        }
+      } catch (e) {
+        CC.showAlert('barber-form-alert', 'Error de conexión.', 'err');
+      } finally {
+        CC.setLoading('btn-save-barber', false, '<i class="bi bi-check-lg"></i> Guardar');
+      }
+    }
+
+    /* ── Delete ─────────────────────────────────────── */
+    function promptDeleteBarber(id) {
+      document.getElementById('delete-barber-id').value = id;
+      $('#deleteModal').modal('show');
+    }
+
+    async function confirmDeleteBarber() {
+      const id = document.getElementById('delete-barber-id').value;
+      try {
+        const token = CC.getToken();
+        const res = await fetch(`/api/admin/barberos/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        $('#deleteModal').modal('hide');
+        if (data.ok) {
+          CC.showAlert('barberos-alert', 'Barbero eliminado.', 'ok');
+          loadBarberos();
+        } else {
+          CC.showAlert('barberos-alert', data.message || 'No se pudo eliminar.', 'err');
+        }
+      } catch (e) {
+        CC.showAlert('barberos-alert', 'Error de conexión.', 'err');
+        $('#deleteModal').modal('hide');
+      }
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

@@ -64,7 +64,6 @@
       const token  = params.get('token');
       const error  = params.get('error');
 
-      // ── Error case ───────────────────────────────────────
       if (error || !token) {
         document.getElementById('spinner').style.display = 'none';
         const box = document.getElementById('error-box');
@@ -78,7 +77,6 @@
         return;
       }
 
-      // ── Success: decode token (basic, no verify — server already did that) ──
       try {
         const payloadB64 = token.split('.')[1];
         const payload    = JSON.parse(atob(payloadB64));
@@ -91,15 +89,13 @@
           rol:      payload.rol,
         };
 
-        // Save session
         CC.saveSession(token, user);
 
         document.getElementById('msg').textContent =
           `¡Bienvenido, ${user.nombre.split(' ')[0]}! Redirigiendo...`;
 
-        // Redirect after short delay for UX
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = user.rol === 0 ? '/admin/dashboard' : '/';
         }, 1200);
 
       } catch (e) {

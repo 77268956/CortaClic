@@ -64,7 +64,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/site.js"></script>
   <script>
-    // Protect this page (only authenticated clients)
     CC.requireAuth([2]);
 
     let userCitas = [];
@@ -72,18 +71,15 @@
 
     document.addEventListener('DOMContentLoaded', loadUserAppointments);
 
-    // Helper: Dollar format ($)
     function formatDollars(val) {
       return `$${(parseFloat(val) || 0).toFixed(2)}`;
     }
 
-    // Helper: Escape HTML
     function escapeHtml(str) {
       if (!str) return '';
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Load Appointments from API
     async function loadUserAppointments() {
       const loader = document.getElementById('loading-citas');
       const listEl = document.getElementById('citas-list');
@@ -114,7 +110,6 @@
       }
     }
 
-    // Render list of appointments
     function renderCitasList() {
       const listEl = document.getElementById('citas-list');
       const emptyEl = document.getElementById('empty-state');
@@ -187,7 +182,6 @@
       });
     }
 
-    // Cancel appointment handler
     async function cancelAppointment(citaId) {
       if (!confirm('¿Estás seguro de que deseas cancelar esta cita?')) return;
 
@@ -213,7 +207,6 @@
       }
     }
 
-    // Pill filtering
     document.querySelectorAll('#filter-pills .pill').forEach(pill => {
       pill.addEventListener('click', () => {
         document.querySelectorAll('#filter-pills .pill').forEach(p => p.classList.remove('active'));

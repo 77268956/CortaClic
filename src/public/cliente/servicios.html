@@ -99,13 +99,11 @@
   <script>
     let catalogServices = [];
 
-    // Helper: Format Dollars ($)
     function formatDollars(amount) {
       const val = parseFloat(amount) || 0;
       return `$${val.toFixed(2)}`;
     }
 
-    // Helper: Safe HTML escape
     function escapeHtml(text) {
       if (!text) return '';
       return text
@@ -115,7 +113,6 @@
         .replace(/"/g, '&quot;');
     }
 
-    // Load Services from DB
     async function loadCatalogFromDB() {
       const loader = document.getElementById('loading-services');
       const gridEl = document.getElementById('svc-grid');
@@ -145,7 +142,6 @@
       }
     }
 
-    // Render Services Grid (2 columns on mobile col-6, 3 on desktop col-md-4)
     function renderGrid(services) {
       const gridEl = document.getElementById('svc-grid');
       gridEl.innerHTML = '';
@@ -178,7 +174,6 @@
       });
     }
 
-    // Open Service Modal
     function openCatalogModal(s) {
       const imgPath = s.imagen ? s.imagen : '/img/default-service.svg';
       const imgEl = document.getElementById('svc-modal-img-el');
@@ -196,7 +191,6 @@
       $('#svcModal').modal('show');
     }
 
-    // Search filter
     document.getElementById('search-svc').addEventListener('input', function () {
       const q = this.value.toLowerCase().trim();
       const gridEl = document.getElementById('svc-grid');

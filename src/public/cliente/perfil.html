@@ -23,7 +23,7 @@
       <div class="profile-avatar" id="avatar-initials">?</div>
       <h1 class="profile-name" id="profile-name">Cargando...</h1>
       <p class="profile-email" id="profile-email">—</p>
-      <div class="profile-role-badge">
+      <div class="profile-role-badge" id="profile-role-badge">
         <i class="bi bi-shield-check"></i> Cliente
       </div>
     </div>
@@ -46,6 +46,13 @@
         <div class="info-row__label"><i class="bi bi-calendar"></i> Miembro desde</div>
         <div class="info-row__value">Agosto 2026</div>
       </div>
+    </div>
+
+    <!-- Admin Panel Shortcut (shown if rol === 0) -->
+    <div id="admin-shortcut-card" class="d-none mb-3">
+      <a href="/admin/dashboard" class="btn-accent w-100 d-flex align-items-center justify-content-center" style="padding:14px; font-weight:700;">
+        <i class="bi bi-speedometer2 mr-2"></i> Ir al Panel de Administración
+      </a>
     </div>
 
     <!-- Quick Actions -->
@@ -101,23 +108,25 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/site.js"></script>
   <script>
-    // Protect page
     CC.requireAuth();
 
     document.addEventListener('DOMContentLoaded', () => {
       const user = CC.getUser();
       if (!user) return;
 
-      // Avatar: first letter of nombre
       const initials = user.nombre ? user.nombre.charAt(0).toUpperCase() : '?';
       document.getElementById('avatar-initials').textContent = initials;
 
-      // Fill info
       document.getElementById('profile-name').textContent  = user.nombre  || '—';
       document.getElementById('profile-email').textContent = user.email   || '—';
       document.getElementById('info-nombre').textContent   = user.nombre  || '—';
       document.getElementById('info-email').textContent    = user.email   || '—';
       document.getElementById('info-telefono').textContent = user.telefono || 'No registrado';
+
+      if (user.rol === 0) {
+        document.getElementById('profile-role-badge').innerHTML = '<i class="bi bi-shield-lock-fill"></i> Administrador';
+        document.getElementById('admin-shortcut-card').classList.remove('d-none');
+      }
     });
   </script>
 </body>

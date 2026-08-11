@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Historial general de citas y ventas – CortaClic Admin.">
+  <title>Historial – CortaClic Admin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <header id="mobile-header" class="mobile-header d-md-none"></header>
+  <div id="desktop-nav" class="d-none d-md-block"></div>
+
+  <main class="page-container fade-up">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <p class="page-hero__tag"><i class="bi bi-clock-history mr-1"></i>Registro</p>
+      <h1 class="page-hero__title">Historial General</h1>
+      <p class="page-hero__sub">Todas las citas registradas en el sistema.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="row align-items-end mb-3" style="margin: 0;">
+      <div class="col-12 col-md-4 mb-2">
+        <label class="cc-label">Filtrar por estado</label>
+        <div class="pills-row" style="margin:0; padding: 0;" id="hist-pills">
+          <span class="pill active" data-estado="all">Todas</span>
+          <span class="pill" data-estado="0">Pendientes</span>
+          <span class="pill" data-estado="1">Confirmadas</span>
+          <span class="pill" data-estado="3">Completadas</span>
+          <span class="pill" data-estado="2">Canceladas</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3 mb-2">
+        <label class="cc-label">Desde</label>
+        <input type="date" id="filter-desde" class="cc-input">
+      </div>
+      <div class="col-6 col-md-3 mb-2">
+        <label class="cc-label">Hasta</label>
+        <input type="date" id="filter-hasta" class="cc-input">
+      </div>
+      <div class="col-12 col-md-2 mb-2">
+        <button class="btn-accent w-100" style="padding:10px;" onclick="loadHistorial()">
+          <i class="bi bi-funnel"></i> Filtrar
+        </button>
+      </div>
+    </div>
+
+    <div class="cc-alert mb-3" id="hist-alert"></div>
+
+    <!-- Loading -->
+    <div id="loading-hist" class="text-center py-4">
+      <span class="btn-spinner mb-2" style="width:28px;height:28px;border-width:3px;"></span>
+      <p style="font-size:.85rem;color:var(--text-3);">Cargando historial...</p>
+    </div>
+
+    <!-- Table (Desktop) / Cards (Mobile) -->
+    <div id="hist-content" style="display:none;">
+
+      <!-- Desktop Table -->
+      <div class="d-none d-md-block">
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Barbero</th>
+                <th>Fecha / Hora</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="hist-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div class="d-md-none" id="hist-cards"></div>
+
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-state d-none" id="empty-hist">
+      <i class="bi bi-clock-history d-block"></i>
+      <h3>Sin registros</h3>
+      <p>No hay citas en el historial con los filtros seleccionados.</p>
+    </div>
+
+  </main>
+
+  <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/site.js"></script>
+  <script>
+    CC.requireAuth([0]);
+
+    let currentEstado = 'all';
+
+    const ESTADO_MAP = {
+      0: { label: 'Pendiente',   cls: 'sbadge-pending' },
+      1: { label: 'Confirmada',  cls: 'sbadge-confirm' },
+      2: { label: 'Cancelada',   cls: 'sbadge-cancel'  },
+      3: { label: 'Completada',  cls: 'sbadge-done'    },
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Default date range: last 30 days
+      const now = new Date();
+      const from = new Date();
+      from.setDate(now.getDate() - 30);
+      document.getElementById('filter-hasta').value = now.toISOString().split('T')[0];
+      document.getElementById('filter-desde').value = from.toISOString().split('T')[0];
+
+      loadHistorial();
+    });
+
+    document.querySelectorAll('#hist-pills .pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#hist-pills .pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentEstado = pill.dataset.estado;
+      });
+    });
+
+    async function loadHistorial() {
+      const loader  = document.getElementById('loading-hist');
+      const content = document.getElementById('hist-content');
+      const emptyEl = document.getElementById('empty-hist');
+
+      loader.style.display = 'block';
+      content.style.display = 'none';
+      emptyEl.classList.add('d-none');
+
+      const desde = document.getElementById('filter-desde').value;
+      const hasta = document.getElementById('filter-hasta').value;
+
+      let url = `/api/admin/historial?desde=${desde}&hasta=${hasta}`;
+      if (currentEstado !== 'all') url += `&estado=${currentEstado}`;
+
+      try {
+        const token = CC.getToken();
+        const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+
+        loader.style.display = 'none';
+
+        if (data.ok && data.citas && data.citas.length > 0) {
+          renderTable(data.citas);
+          renderCards(data.citas);
+          content.style.display = 'block';
+        } else {
+          emptyEl.classList.remove('d-none');
+        }
+      } catch (e) {
+        loader.style.display = 'none';
+        CC.showAlert('hist-alert', 'Error al cargar el historial.', 'err');
+      }
+    }
+
+    function renderTable(citas) {
+      const tbody = document.getElementById('hist-table-body');
+      tbody.innerHTML = citas.map((c, i) => {
+        const dt = new Date(c.fecha_hora);
+        const fecha = dt.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+        const hora  = dt.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+        const est   = ESTADO_MAP[c.estado] || { label: 'Desconocido', cls: 'sbadge-pending' };
+        return `
+          <tr>
+            <td style="color:var(--text-3);">${i + 1}</td>
+            <td>${esc(c.cliente_nombre || '—')}</td>
+            <td>${esc(c.servicio_nombre || '—')}</td>
+            <td>${esc(c.barbero_nombre || '—')}</td>
+            <td style="white-space:nowrap;">${fecha}<br><span style="color:var(--text-3); font-size:.75rem;">${hora}</span></td>
+            <td style="color:var(--accent); font-weight:700;">$${parseFloat(c.servicio_precio || 0).toFixed(2)}</td>
+            <td><span class="sbadge ${est.cls}">${est.label}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderCards(citas) {
+      const cards = document.getElementById('hist-cards');
+      cards.innerHTML = citas.map(c => {
+        const dt = new Date(c.fecha_hora);
+        const fecha = dt.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+        const hora  = dt.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+        const est   = ESTADO_MAP[c.estado] || { label: 'Desconocido', cls: 'sbadge-pending' };
+        return `
+          <div class="admin-hist-card">
+            <div class="admin-hist-card__top">
+              <span class="sbadge ${est.cls}">${est.label}</span>
+              <span style="color:var(--accent); font-weight:700; font-size:.9rem;">
+                $${parseFloat(c.servicio_precio || 0).toFixed(2)}
+              </span>
+            </div>
+            <div class="admin-hist-card__service">${esc(c.servicio_nombre || '—')}</div>
+            <div class="admin-hist-card__meta">
+              <span><i class="bi bi-person-fill mr-1" style="color:var(--accent)"></i>${esc(c.cliente_nombre || '—')}</span>
+            </div>
+            <div class="admin-hist-card__meta">
+              <span><i class="bi bi-person-badge mr-1" style="color:var(--text-3)"></i>${esc(c.barbero_nombre || '—')}</span>
+            </div>
+            <div class="admin-hist-card__meta">
+              <span><i class="bi bi-calendar3 mr-1" style="color:var(--text-3)"></i>${fecha} · ${hora}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

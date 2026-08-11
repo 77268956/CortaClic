@@ -203,6 +203,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
+      // Si es admin, redirigir al panel
+      const user = CC.getUser();
+      if (user && user.rol === 0) {
+        window.location.href = '/admin/dashboard';
+        return;
+      }
       await loadPopularServices();
       await loadHomeBarbers();
     });
@@ -219,7 +225,6 @@
         loader.style.display = 'none';
 
         if (data.ok && Array.isArray(data.servicios) && data.servicios.length > 0) {
-          // Take top 4 for Home
           const topServices = data.servicios.slice(0, 4);
           listEl.innerHTML = '';
 
