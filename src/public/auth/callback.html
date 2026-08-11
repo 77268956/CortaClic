@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciando sesión... – CortaClic</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d1117;
+      font-family: 'Outfit', sans-serif;
+      color: #F9FAFB;
+    }
+    .wrap { text-align: center; }
+    .spinner {
+      width: 52px; height: 52px;
+      border: 3px solid rgba(245,158,11,.2);
+      border-top-color: #F59E0B;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .logo { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .logo span { color: #F59E0B; }
+    .sub { font-size: .88rem; color: rgba(249,250,251,.55); }
+    .error-box {
+      display: none;
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-top: 20px;
+      color: #FCA5A5;
+      font-size: .88rem;
+      max-width: 320px;
+    }
+    .error-box a { color: #F59E0B; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="spinner" id="spinner"></div>
+    <div class="logo">Corta<span>Clic</span></div>
+    <p class="sub" id="msg">Verificando tu cuenta de Google...</p>
+    <div class="error-box" id="error-box">
+      <i class="bi bi-exclamation-circle mr-1"></i>
+      <span id="error-msg">Ocurrió un error al iniciar sesión.</span>
+      <br><br>
+      <a href="/login">← Volver al login</a>
+    </div>
+  </div>
+
+  <script src="/js/site.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const token  = params.get('token');
+      const error  = params.get('error');
+
+      // ── Error case ───────────────────────────────────────
+      if (error || !token) {
+        document.getElementById('spinner').style.display = 'none';
+        const box = document.getElementById('error-box');
+        const errMsg = {
+          google_cancelled: 'Cancelaste el inicio de sesión con Google.',
+          google_failed:    'No pudimos autenticarte con Google. Intenta de nuevo.',
+        }[error] || 'Error desconocido.';
+        document.getElementById('error-msg').textContent = errMsg;
+        document.getElementById('msg').textContent = 'Algo salió mal';
+        box.style.display = 'block';
+        return;
+      }
+
+      // ── Success: decode token (basic, no verify — server already did that) ──
+      try {
+        const payloadB64 = token.split('.')[1];
+        const payload    = JSON.parse(atob(payloadB64));
+
+        const user = {
+          id:       payload.id,
+          nombre:   payload.nombre,
+          email:    payload.email,
+          telefono: payload.telefono || null,
+          rol:      payload.rol,
+        };
+
+        // Save session
+        CC.saveSession(token, user);
+
+        document.getElementById('msg').textContent =
+          `¡Bienvenido, ${user.nombre.split(' ')[0]}! Redirigiendo...`;
+
+        // Redirect after short delay for UX
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1200);
+
+      } catch (e) {
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('error-msg').textContent = 'Token inválido recibido.';
+        document.getElementById('error-box').style.display = 'block';
+      }
+    })();
+  </script>
+</body>
+</html>

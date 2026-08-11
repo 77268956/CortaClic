@@ -30,6 +30,7 @@ const clientePages = [
   { route: '/carrito',         file: 'carrito.html'  },
   { route: '/mis-citas',       file: 'mis-citas.html'},
   { route: '/perfil',          file: 'perfil.html'   },
+  { route: '/auth/callback',   file: 'auth/callback.html' },
 ];
 
 clientePages.forEach(({ route, file }) => {
