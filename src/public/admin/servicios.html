@@ -6,7 +6,7 @@
   <meta name="description" content="Gestionar servicios del catálogo – CortaClic Admin.">
   <title>Servicios – CortaClic Admin</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -19,11 +19,11 @@
 
     <div class="admin-page-header">
       <div>
-        <p class="page-hero__tag"><i class="bi bi-scissors mr-1"></i>Catálogo</p>
+        <p class="page-hero__tag"><i class="fa fa-scissors mr-1"></i>Catálogo</p>
         <h1 class="page-hero__title">Servicios</h1>
       </div>
       <button class="btn-accent" onclick="openServiceModal()">
-        <i class="bi bi-plus-lg"></i> Nuevo
+        <i class="fa fa-plus"></i> Nuevo
       </button>
     </div>
 
@@ -40,10 +40,10 @@
 
     <!-- Empty -->
     <div class="empty-state d-none" id="empty-svcs">
-      <i class="bi bi-scissors d-block"></i>
+      <i class="fa fa-scissors d-block"></i>
       <h3>Sin servicios</h3>
       <p>Aún no hay servicios. ¡Agrega el primero al catálogo!</p>
-      <button class="btn-accent" onclick="openServiceModal()"><i class="bi bi-plus-lg"></i> Agregar servicio</button>
+      <button class="btn-accent" onclick="openServiceModal()"><i class="fa fa-plus"></i> Agregar servicio</button>
     </div>
 
   </main>
@@ -56,7 +56,7 @@
       <div class="modal-content">
         <div class="modal-header border-0">
           <h5 class="modal-title font-weight-bold" id="svc-modal-title">Nuevo Servicio</h5>
-          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
         </div>
         <div class="modal-body">
 
@@ -72,7 +72,7 @@
               <div class="cc-group mb-0">
                 <label class="cc-label">URL de imagen</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-link-45deg"></i>
+                  <i class="fa fa-link-45deg"></i>
                   <input type="url" id="svc-imagen" class="cc-input" placeholder="https://..." oninput="previewImage(this.value)">
                 </div>
               </div>
@@ -83,7 +83,7 @@
           <div class="cc-group">
             <label class="cc-label">Nombre del servicio *</label>
             <div class="cc-input-icon">
-              <i class="bi bi-scissors"></i>
+              <i class="fa fa-scissors"></i>
               <input type="text" id="svc-nombre" class="cc-input" placeholder="Ej: Corte Clásico">
             </div>
           </div>
@@ -102,7 +102,7 @@
               <div class="cc-group">
                 <label class="cc-label">Precio (USD) *</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-currency-dollar"></i>
+                  <i class="fa fa-currency-dollar"></i>
                   <input type="number" id="svc-precio" class="cc-input" placeholder="0.00" min="0" step="0.01">
                 </div>
               </div>
@@ -111,7 +111,7 @@
               <div class="cc-group">
                 <label class="cc-label">Duración (min) *</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-clock"></i>
+                  <i class="fa fa-clock-o"></i>
                   <input type="number" id="svc-duracion" class="cc-input" placeholder="30" min="5" step="5">
                 </div>
               </div>
@@ -134,7 +134,7 @@
         <div class="modal-footer border-0">
           <button class="btn-ghost mr-2" data-dismiss="modal">Cancelar</button>
           <button class="btn-accent" id="btn-save-svc" onclick="saveService()">
-            <i class="bi bi-check-lg"></i> Guardar
+            <i class="fa fa-check-lg"></i> Guardar
           </button>
         </div>
       </div>
@@ -153,7 +153,7 @@
           <div class="d-flex justify-content-center" style="gap:10px;">
             <button class="btn-ghost" data-dismiss="modal">Cancelar</button>
             <button class="btn-danger-ghost" onclick="confirmDeleteService()">
-              <i class="bi bi-trash mr-1"></i>Eliminar
+              <i class="fa fa-trash mr-1"></i>Eliminar
             </button>
           </div>
         </div>
@@ -233,10 +233,10 @@
                 <div class="admin-svc-card__desc">${esc(s.descripcion || '—')}</div>
                 <div class="admin-svc-card__actions">
                   <button class="btn-ghost" style="flex:1; padding:8px; font-size:.8rem;" onclick="editService(${s.id})">
-                    <i class="bi bi-pencil mr-1"></i>Editar
+                    <i class="fa fa-pencil mr-1"></i>Editar
                   </button>
                   <button class="btn-danger-ghost ml-1" style="padding:8px 12px;" onclick="promptDeleteService(${s.id})">
-                    <i class="bi bi-trash"></i>
+                    <i class="fa fa-trash"></i>
                   </button>
                 </div>
               </div>
@@ -316,7 +316,7 @@
       } catch (e) {
         CC.showAlert('svc-form-alert', 'Error de conexión.', 'err');
       } finally {
-        CC.setLoading('btn-save-svc', false, '<i class="bi bi-check-lg"></i> Guardar');
+        CC.setLoading('btn-save-svc', false, '<i class="fa fa-check-lg"></i> Guardar');
       }
     }
 

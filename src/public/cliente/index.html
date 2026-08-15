@@ -6,7 +6,7 @@
   <meta name="description" content="CortaClic – Tu barbería digital. Agenda citas, compra productos y gestiona tu estilo.">
   <title>Inicio – CortaClic</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
   <style>
     .quick-shortcut {
@@ -72,16 +72,15 @@
 
     <!-- Hero -->
     <div class="page-hero">
-      <p class="page-hero__tag"><i class="bi bi-scissors mr-1"></i>Barbería Premium</p>
-      <h1 class="page-hero__title">Tu estilo en las<br>mejores manos</h1>
+      <h1 class="page-hero__title">Tu estilo en las mejores manos</h1>
       <p class="page-hero__sub">Agenda tu cita en segundos y gestiona tus reservas fácilmente.</p>
       
       <div class="d-flex flex-wrap gap-2 mt-3" style="gap:10px;">
         <a href="/servicios/reservar" class="btn-accent">
-          <i class="bi bi-calendar-plus"></i> Agendar Cita
+          <i class="fa fa-calendar-plus"></i> Agendar Cita
         </a>
         <a href="/servicios" class="btn-ghost">
-          <i class="bi bi-grid-3x3-gap"></i> Ver Catálogo
+          <i class="fa fa-grid-3x3-gap"></i> Ver Catálogo
         </a>
       </div>
     </div>
@@ -90,25 +89,25 @@
     <div class="row mb-4" style="margin:0 -4px;">
       <div class="col-3 px-1">
         <a href="/servicios" class="quick-shortcut">
-          <i class="bi bi-scissors"></i>
+          <i class="fa fa-scissors"></i>
           <span>Cortes</span>
         </a>
       </div>
       <div class="col-3 px-1">
         <a href="/tienda" class="quick-shortcut">
-          <i class="bi bi-shop"></i>
+          <i class="fa fa-shopping-bag"></i>
           <span>Tienda</span>
         </a>
       </div>
       <div class="col-3 px-1">
         <a href="/mis-citas" class="quick-shortcut">
-          <i class="bi bi-calendar-check"></i>
+          <i class="fa fa-calendar-check-o"></i>
           <span>Citas</span>
         </a>
       </div>
       <div class="col-3 px-1">
         <a href="/perfil" class="quick-shortcut">
-          <i class="bi bi-person"></i>
+          <i class="fa fa-user"></i>
           <span>Perfil</span>
         </a>
       </div>
@@ -116,7 +115,7 @@
 
     <!-- Section Title: Cortes Más Populares -->
     <div class="d-flex align-items-center justify-content-between mb-2">
-      <p class="section-title mb-0" style="flex:1;"><i class="bi bi-star-fill mr-2" style="color:var(--accent)"></i>Cortes Destacados</p>
+      <p class="section-title mb-0" style="flex:1;"><i class="fa fa-star mr-2" style="color:var(--accent)"></i>Cortes Destacados</p>
       <a href="/servicios" style="font-size:.78rem; font-weight:700; color:var(--accent); white-space:nowrap;" class="ml-2">Ver todos →</a>
     </div>
 
@@ -130,7 +129,7 @@
     <div id="popular-list" style="display:none;" class="mb-4"></div>
 
     <!-- Section Title: Nuestros Barberos -->
-    <p class="section-title"><i class="bi bi-people-fill mr-2" style="color:var(--accent)"></i>Nuestros Barberos</p>
+    <p class="section-title"><i class="fa fa-people-fill mr-2" style="color:var(--accent)"></i>Nuestros Barberos</p>
 
     <!-- Barbers List Container -->
     <div id="barbers-home-list" class="mb-4">
@@ -143,7 +142,7 @@
     <div class="booking-card d-flex align-items-center justify-content-between flex-wrap" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(17,24,39,0.9)); border-color: var(--border-a); gap:12px;">
       <div>
         <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.05rem;" class="mb-1">
-          <i class="bi bi-bag-check mr-1" style="color:var(--accent)"></i> Productos de Barbería
+          <i class="fa fa-bag-check mr-1" style="color:var(--accent)"></i> Productos de Barbería
         </div>
         <div style="font-size:.8rem; color:var(--text-2);">Lleva ceras, aceites y acondicionadores a casa.</div>
       </div>
@@ -161,7 +160,7 @@
       <div class="modal-content">
         <div class="modal-header border-0 pb-0">
           <button type="button" class="close" data-dismiss="modal">
-            <i class="bi bi-x-lg"></i>
+            <i class="fa fa-times"></i>
           </button>
         </div>
         <div class="modal-body pt-0">
@@ -172,7 +171,7 @@
           <div class="modal-price mb-2" id="modal-price">$0.00</div>
           <div class="modal-meta mb-3">
             <div class="modal-meta-item">
-              <i class="bi bi-clock"></i>
+              <i class="fa fa-clock-o"></i>
               <span id="modal-dur">— min</span>
             </div>
           </div>
@@ -181,7 +180,7 @@
         <div class="modal-footer">
           <button type="button" class="btn-ghost mr-2" data-dismiss="modal">Cerrar</button>
           <a id="btn-agendar" href="#" class="btn-accent">
-            <i class="bi bi-calendar-plus"></i> Agendar Cita
+            <i class="fa fa-calendar-plus"></i> Agendar Cita
           </a>
         </div>
       </div>
@@ -240,11 +239,11 @@
                 <div class="service-card__name">${escapeHtml(s.nombre)}</div>
                 <div class="service-card__meta">
                   <span class="service-card__price">${formatDollars(s.precio)}</span>
-                  <span class="service-card__dur"><i class="bi bi-clock"></i> ${s.duracion_minutos} min</span>
+                  <span class="service-card__dur"><i class="fa fa-clock-o"></i> ${s.duracion_minutos} min</span>
                 </div>
                 <p class="service-card__desc">${escapeHtml(s.descripcion || '')}</p>
               </div>
-              <div class="service-card__arrow"><i class="bi bi-chevron-right"></i></div>
+              <div class="service-card__arrow"><i class="fa fa-chevron-right"></i></div>
             `;
             card.addEventListener('click', () => openModal(s));
             listEl.appendChild(card);
@@ -271,7 +270,7 @@
             const card = document.createElement('div');
             card.className = 'barber-card-home';
             card.innerHTML = `
-              <div class="barber-avatar-home"><i class="bi bi-person"></i></div>
+              <div class="barber-avatar-home"><i class="fa fa-user"></i></div>
               <div style="flex:1;">
                 <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.92rem;">${escapeHtml(b.nombre)}</div>
                 <div style="font-size:.76rem; color:var(--text-3);">${escapeHtml(b.especialidad || 'Especialista en barbería')}</div>

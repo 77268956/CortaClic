@@ -6,7 +6,7 @@
   <meta name="description" content="Inicia sesión o crea tu cuenta en CortaClic para agendar citas y comprar productos.">
   <title>Iniciar Sesión – CortaClic</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
   <style>
     .btn-google {
@@ -61,7 +61,7 @@
         <div class="cc-group">
           <label class="cc-label">Email</label>
           <div class="cc-input-icon">
-            <i class="bi bi-envelope"></i>
+            <i class="fa fa-envelope"></i>
             <input type="email" id="login-email" class="cc-input" placeholder="tu@email.com" autocomplete="email">
           </div>
         </div>
@@ -69,13 +69,13 @@
         <div class="cc-group">
           <label class="cc-label">Contraseña</label>
           <div class="cc-input-icon">
-            <i class="bi bi-lock"></i>
+            <i class="fa fa-lock"></i>
             <input type="password" id="login-pass" class="cc-input" placeholder="••••••••" autocomplete="current-password">
           </div>
         </div>
 
         <button id="btn-login" class="btn-accent w-100 mt-2" style="justify-content:center;" onclick="doLogin()">
-          <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+          <i class="fa fa-box-arrow-in-right"></i> Iniciar Sesión
         </button>
 
         <div class="divider-text mt-3">o continúa con</div>
@@ -103,7 +103,7 @@
         <div class="cc-group">
           <label class="cc-label">Nombre completo</label>
           <div class="cc-input-icon">
-            <i class="bi bi-person"></i>
+            <i class="fa fa-user"></i>
             <input type="text" id="reg-nombre" class="cc-input" placeholder="Tu nombre" autocomplete="name">
           </div>
         </div>
@@ -111,7 +111,7 @@
         <div class="cc-group">
           <label class="cc-label">Email</label>
           <div class="cc-input-icon">
-            <i class="bi bi-envelope"></i>
+            <i class="fa fa-envelope"></i>
             <input type="email" id="reg-email" class="cc-input" placeholder="tu@email.com" autocomplete="email">
           </div>
         </div>
@@ -119,7 +119,7 @@
         <div class="cc-group">
           <label class="cc-label">Teléfono <span style="color:var(--text-3); font-size:.7rem; text-transform:none; letter-spacing:0;">(opcional)</span></label>
           <div class="cc-input-icon">
-            <i class="bi bi-phone"></i>
+            <i class="fa fa-phone"></i>
             <input type="tel" id="reg-tel" class="cc-input" placeholder="+52 55 0000 0000" autocomplete="tel">
           </div>
         </div>
@@ -127,13 +127,13 @@
         <div class="cc-group">
           <label class="cc-label">Contraseña</label>
           <div class="cc-input-icon">
-            <i class="bi bi-lock"></i>
+            <i class="fa fa-lock"></i>
             <input type="password" id="reg-pass" class="cc-input" placeholder="Mín. 6 caracteres" autocomplete="new-password">
           </div>
         </div>
 
         <button id="btn-register" class="btn-accent w-100 mt-2" style="justify-content:center;" onclick="doRegister()">
-          <i class="bi bi-person-plus"></i> Crear Cuenta
+          <i class="fa fa-person-plus"></i> Crear Cuenta
         </button>
 
         <div class="divider-text mt-3">o continúa con</div>
@@ -159,7 +159,7 @@
     <!-- Back to home -->
     <p class="text-center mt-3" style="font-size:.8rem;">
       <a href="/" style="color:var(--text-3);">
-        <i class="bi bi-arrow-left mr-1"></i>Volver al inicio
+        <i class="fa fa-arrow-left mr-1"></i>Volver al inicio
       </a>
     </p>
 
@@ -208,7 +208,7 @@
       } catch {
         CC.showAlert('alert-login', 'Error de conexión. Intenta de nuevo.', 'err');
       } finally {
-        CC.setLoading('btn-login', false, '<i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión');
+        CC.setLoading('btn-login', false, '<i class="fa fa-box-arrow-in-right"></i> Iniciar Sesión');
       }
     }
 
@@ -239,7 +239,7 @@
       } catch {
         CC.showAlert('alert-register', 'Error de conexión. Intenta de nuevo.', 'err');
       } finally {
-        CC.setLoading('btn-register', false, '<i class="bi bi-person-plus"></i> Crear Cuenta');
+        CC.setLoading('btn-register', false, '<i class="fa fa-person-plus"></i> Crear Cuenta');
       }
     }
 

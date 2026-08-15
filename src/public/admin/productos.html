@@ -6,7 +6,7 @@
   <meta name="description" content="Gestionar productos de la tienda – CortaClic Admin.">
   <title>Productos – CortaClic Admin</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -19,11 +19,11 @@
 
     <div class="admin-page-header">
       <div>
-        <p class="page-hero__tag"><i class="bi bi-box-seam mr-1"></i>Tienda</p>
+        <p class="page-hero__tag"><i class="fa fa-archive mr-1"></i>Tienda</p>
         <h1 class="page-hero__title">Productos</h1>
       </div>
       <button class="btn-accent" onclick="openProdModal()">
-        <i class="bi bi-plus-lg"></i> Nuevo
+        <i class="fa fa-plus"></i> Nuevo
       </button>
     </div>
 
@@ -40,10 +40,10 @@
 
     <!-- Empty -->
     <div class="empty-state d-none" id="empty-prods">
-      <i class="bi bi-bag-x d-block"></i>
+      <i class="fa fa-times-circle d-block"></i>
       <h3>Sin productos</h3>
       <p>Aún no hay productos en la tienda. ¡Agrega el primero!</p>
-      <button class="btn-accent" onclick="openProdModal()"><i class="bi bi-plus-lg"></i> Agregar producto</button>
+      <button class="btn-accent" onclick="openProdModal()"><i class="fa fa-plus"></i> Agregar producto</button>
     </div>
 
   </main>
@@ -56,7 +56,7 @@
       <div class="modal-content">
         <div class="modal-header border-0">
           <h5 class="modal-title font-weight-bold" id="prod-modal-title">Nuevo Producto</h5>
-          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
         </div>
         <div class="modal-body">
 
@@ -72,7 +72,7 @@
               <div class="cc-group mb-0">
                 <label class="cc-label">URL de imagen</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-link-45deg"></i>
+                  <i class="fa fa-link-45deg"></i>
                   <input type="url" id="prod-imagen" class="cc-input" placeholder="https://..." oninput="previewProd(this.value)">
                 </div>
               </div>
@@ -85,7 +85,7 @@
               <div class="cc-group">
                 <label class="cc-label">Nombre del producto *</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-box-seam"></i>
+                  <i class="fa fa-archive"></i>
                   <input type="text" id="prod-nombre" class="cc-input" placeholder="Ej: Pomada Matt Effect">
                 </div>
               </div>
@@ -94,7 +94,7 @@
               <div class="cc-group">
                 <label class="cc-label">Categoría</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-tag"></i>
+                  <i class="fa fa-tag"></i>
                   <input type="text" id="prod-categoria" class="cc-input" placeholder="Ej: Pomadas">
                 </div>
               </div>
@@ -115,7 +115,7 @@
               <div class="cc-group">
                 <label class="cc-label">Precio (USD) *</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-currency-dollar"></i>
+                  <i class="fa fa-currency-dollar"></i>
                   <input type="number" id="prod-precio" class="cc-input" placeholder="0.00" min="0" step="0.01">
                 </div>
               </div>
@@ -124,7 +124,7 @@
               <div class="cc-group">
                 <label class="cc-label">Stock *</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-layers"></i>
+                  <i class="fa fa-layers"></i>
                   <input type="number" id="prod-stock" class="cc-input" placeholder="0" min="0">
                 </div>
               </div>
@@ -147,7 +147,7 @@
         <div class="modal-footer border-0">
           <button class="btn-ghost mr-2" data-dismiss="modal">Cancelar</button>
           <button class="btn-accent" id="btn-save-prod" onclick="saveProduct()">
-            <i class="bi bi-check-lg"></i> Guardar
+            <i class="fa fa-check-lg"></i> Guardar
           </button>
         </div>
       </div>
@@ -166,7 +166,7 @@
           <div class="d-flex justify-content-center" style="gap:10px;">
             <button class="btn-ghost" data-dismiss="modal">Cancelar</button>
             <button class="btn-danger-ghost" onclick="confirmDeleteProduct()">
-              <i class="bi bi-trash mr-1"></i>Eliminar
+              <i class="fa fa-trash mr-1"></i>Eliminar
             </button>
           </div>
         </div>
@@ -253,10 +253,10 @@
                 <div class="admin-svc-card__desc">${esc(p.descripcion || '—')}</div>
                 <div class="admin-svc-card__actions">
                   <button class="btn-ghost" style="flex:1; padding:8px; font-size:.8rem;" onclick="editProduct(${p.id})">
-                    <i class="bi bi-pencil mr-1"></i>Editar
+                    <i class="fa fa-pencil mr-1"></i>Editar
                   </button>
                   <button class="btn-danger-ghost ml-1" style="padding:8px 12px;" onclick="promptDeleteProduct(${p.id})">
-                    <i class="bi bi-trash"></i>
+                    <i class="fa fa-trash"></i>
                   </button>
                 </div>
               </div>
@@ -338,7 +338,7 @@
       } catch (e) {
         CC.showAlert('prod-form-alert', 'Error de conexión.', 'err');
       } finally {
-        CC.setLoading('btn-save-prod', false, '<i class="bi bi-check-lg"></i> Guardar');
+        CC.setLoading('btn-save-prod', false, '<i class="fa fa-check-lg"></i> Guardar');
       }
     }
 

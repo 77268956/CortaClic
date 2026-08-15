@@ -6,7 +6,7 @@
   <meta name="description" content="Gestionar barberos y sus horarios – CortaClic Admin.">
   <title>Barberos – CortaClic Admin</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="stylesheet" href="/css/admin.css">
 </head>
@@ -19,11 +19,11 @@
 
     <div class="admin-page-header">
       <div>
-        <p class="page-hero__tag"><i class="bi bi-people mr-1"></i>Gestión</p>
+        <p class="page-hero__tag"><i class="fa fa-users mr-1"></i>Gestión</p>
         <h1 class="page-hero__title">Barberos</h1>
       </div>
       <button class="btn-accent" id="btn-new-barber" onclick="openBarberModal()">
-        <i class="bi bi-plus-lg"></i> Nuevo
+        <i class="fa fa-plus"></i> Nuevo
       </button>
     </div>
 
@@ -40,10 +40,10 @@
 
     <!-- Empty -->
     <div class="empty-state d-none" id="empty-barberos">
-      <i class="bi bi-person-x d-block"></i>
+      <i class="fa fa-person-x d-block"></i>
       <h3>Sin barberos</h3>
       <p>Aún no hay barberos registrados. ¡Agrega el primero!</p>
-      <button class="btn-accent" onclick="openBarberModal()"><i class="bi bi-plus-lg"></i> Agregar barbero</button>
+      <button class="btn-accent" onclick="openBarberModal()"><i class="fa fa-plus"></i> Agregar barbero</button>
     </div>
 
   </main>
@@ -56,7 +56,7 @@
       <div class="modal-content">
         <div class="modal-header border-0">
           <h5 class="modal-title font-weight-bold" id="barber-modal-title">Nuevo Barbero</h5>
-          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
         </div>
         <div class="modal-body">
 
@@ -70,7 +70,7 @@
               <div class="cc-group">
                 <label class="cc-label">Nombre completo *</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-person"></i>
+                  <i class="fa fa-user"></i>
                   <input type="text" id="barber-nombre" class="cc-input" placeholder="Ej: Juan García">
                 </div>
               </div>
@@ -79,7 +79,7 @@
               <div class="cc-group">
                 <label class="cc-label">Teléfono</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-phone"></i>
+                  <i class="fa fa-phone"></i>
                   <input type="tel" id="barber-telefono" class="cc-input" placeholder="+52 55 0000 0000">
                 </div>
               </div>
@@ -92,7 +92,7 @@
               <div class="cc-group">
                 <label class="cc-label">Email</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-envelope"></i>
+                  <i class="fa fa-envelope"></i>
                   <input type="email" id="barber-email" class="cc-input" placeholder="barbero@email.com">
                 </div>
               </div>
@@ -101,7 +101,7 @@
               <div class="cc-group">
                 <label class="cc-label">Especialidad</label>
                 <div class="cc-input-icon">
-                  <i class="bi bi-award"></i>
+                  <i class="fa fa-award"></i>
                   <input type="text" id="barber-especialidad" class="cc-input" placeholder="Ej: Cortes clásicos">
                 </div>
               </div>
@@ -125,10 +125,10 @@
           <!-- Horarios Section -->
           <div class="d-flex align-items-center justify-content-between mb-3">
             <h6 style="font-family:'Outfit',sans-serif; font-weight:700; font-size:.95rem; margin:0;">
-              <i class="bi bi-clock mr-1" style="color:var(--accent)"></i> Horarios de Trabajo
+              <i class="fa fa-clock-o mr-1" style="color:var(--accent)"></i> Horarios de Trabajo
             </h6>
             <button class="btn-ghost" style="padding:6px 12px; font-size:.78rem;" onclick="addHorarioRow()">
-              <i class="bi bi-plus-lg mr-1"></i> Agregar día
+              <i class="fa fa-plus mr-1"></i> Agregar día
             </button>
           </div>
 
@@ -138,7 +138,7 @@
         <div class="modal-footer border-0">
           <button class="btn-ghost mr-2" data-dismiss="modal">Cancelar</button>
           <button class="btn-accent" id="btn-save-barber" onclick="saveBarber()">
-            <i class="bi bi-check-lg"></i> Guardar
+            <i class="fa fa-check-lg"></i> Guardar
           </button>
         </div>
       </div>
@@ -157,7 +157,7 @@
           <div class="d-flex justify-content-center" style="gap:10px;">
             <button class="btn-ghost" data-dismiss="modal">Cancelar</button>
             <button class="btn-danger-ghost" id="btn-confirm-delete" onclick="confirmDeleteBarber()">
-              <i class="bi bi-trash mr-1"></i>Eliminar
+              <i class="fa fa-trash mr-1"></i>Eliminar
             </button>
           </div>
         </div>
@@ -220,7 +220,7 @@
       listEl.innerHTML = list.map(b => `
         <div class="admin-list-item">
           <div class="admin-list-item__avatar g${(b.id % 5) + 1}">
-            <i class="bi bi-person-fill"></i>
+            <i class="fa fa-person-fill"></i>
           </div>
           <div class="admin-list-item__info">
             <div class="admin-list-item__name">${esc(b.nombre)}</div>
@@ -228,10 +228,10 @@
           </div>
           <div class="admin-list-item__actions">
             <button class="icon-btn-sm" title="Editar" onclick="editBarber(${b.id})">
-              <i class="bi bi-pencil"></i>
+              <i class="fa fa-pencil"></i>
             </button>
             <button class="icon-btn-sm danger" title="Eliminar" onclick="promptDeleteBarber(${b.id})">
-              <i class="bi bi-trash"></i>
+              <i class="fa fa-trash"></i>
             </button>
           </div>
         </div>
@@ -278,16 +278,16 @@
             ${diaOptions}
           </select>
           <div class="cc-input-icon" style="flex:1; min-width:100px;">
-            <i class="bi bi-clock"></i>
+            <i class="fa fa-clock-o"></i>
             <input type="time" class="cc-input h-inicio" value="${horario ? horario.hora_inicio : '09:00'}">
           </div>
           <span style="color:var(--text-3); font-size:.8rem;">a</span>
           <div class="cc-input-icon" style="flex:1; min-width:100px;">
-            <i class="bi bi-clock-fill"></i>
+            <i class="fa fa-clock-fill"></i>
             <input type="time" class="cc-input h-fin" value="${horario ? horario.hora_fin : '19:00'}">
           </div>
           <button type="button" class="icon-btn-sm danger flex-shrink-0" onclick="this.closest('.horario-row').remove()">
-            <i class="bi bi-dash-lg"></i>
+            <i class="fa fa-dash-lg"></i>
           </button>
         </div>
       `;
@@ -352,7 +352,7 @@
       } catch (e) {
         CC.showAlert('barber-form-alert', 'Error de conexión.', 'err');
       } finally {
-        CC.setLoading('btn-save-barber', false, '<i class="bi bi-check-lg"></i> Guardar');
+        CC.setLoading('btn-save-barber', false, '<i class="fa fa-check-lg"></i> Guardar');
       }
     }
 

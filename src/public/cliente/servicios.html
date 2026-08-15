@@ -6,7 +6,7 @@
   <meta name="description" content="Explora nuestro menú completo de cortes y servicios de barbería en CortaClic.">
   <title>Menú de Servicios – CortaClic</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
@@ -20,24 +20,23 @@
 
     <!-- Hero -->
     <div class="page-hero text-center text-md-left">
-      <p class="page-hero__tag"><i class="bi bi-grid-3x3-gap-fill mr-1"></i>Menú Completo</p>
       <h1 class="page-hero__title">Catálogo de Servicios</h1>
-      <p class="page-hero__sub">Conoce todos nuestros tratamientos, cortes y precios oficiales.</p>
+      <p class="page-hero__sub">Conoce todos nuestros tratamientos, cortes y precios.</p>
     </div>
 
     <!-- Search Bar -->
     <div class="search-bar">
-      <i class="bi bi-search si"></i>
+      <i class="fa fa-search si"></i>
       <input type="text" id="search-svc" placeholder="Buscar en el catálogo de servicios..." autocomplete="off">
     </div>
 
     <!-- Section Title -->
-    <p class="section-title"><i class="bi bi-scissors mr-2" style="color:var(--accent)"></i>Todos los Servicios</p>
+    <p class="section-title"><i class="fa fa-scissors mr-2" style="color:var(--accent)"></i>Todos los Servicios</p>
 
     <!-- Loading State -->
     <div id="loading-services" class="text-center py-5">
       <span class="btn-spinner mb-2" style="width:28px; height:28px; border-width:3px;"></span>
-      <p style="font-size:.88rem; color:var(--text-3);">Cargando catálogo oficial...</p>
+      <p style="font-size:.88rem; color:var(--text-3);">Cargando catálogo...</p>
     </div>
 
     <!-- Grid Container (2 columns on mobile, 3 on desktop) -->
@@ -45,7 +44,7 @@
 
     <!-- Empty State -->
     <div class="empty-state d-none" id="empty-svc">
-      <i class="bi bi-scissors d-block"></i>
+      <i class="fa fa-scissors d-block"></i>
       <h3 id="empty-title">Sin resultados</h3>
       <p id="empty-sub">No encontramos ningún servicio que coincida con tu búsqueda.</p>
     </div>
@@ -61,7 +60,7 @@
       <div class="modal-content">
         <div class="modal-header border-0 pb-0">
           <button type="button" class="close" data-dismiss="modal">
-            <i class="bi bi-x-lg"></i>
+            <i class="fa fa-times"></i>
           </button>
         </div>
         <div class="modal-body pt-0">
@@ -76,7 +75,7 @@
           <!-- Meta -->
           <div class="modal-meta mb-3">
             <div class="modal-meta-item">
-              <i class="bi bi-clock"></i>
+              <i class="fa fa-clock-o"></i>
               <span id="svc-modal-dur">— min</span>
             </div>
           </div>
@@ -86,7 +85,7 @@
         <div class="modal-footer">
           <button type="button" class="btn-ghost mr-2" data-dismiss="modal">Cerrar</button>
           <a id="svc-btn-agendar" href="#" class="btn-accent">
-            <i class="bi bi-calendar-plus"></i> Agendar Cita
+            <i class="fa fa-calendar-plus"></i> Agendar Cita
           </a>
         </div>
       </div>
@@ -156,7 +155,7 @@
             <div class="catalog-card__img">
               <img src="${escapeHtml(imgPath)}" alt="${escapeHtml(s.nombre)}" onerror="this.onerror=null;this.src='/img/default-service.svg';">
               <span class="catalog-card__badge">
-                <i class="bi bi-clock"></i> ${s.duracion_minutos}m
+                <i class="fa fa-clock-o"></i> ${s.duracion_minutos}m
               </span>
             </div>
             <div class="catalog-card__body">

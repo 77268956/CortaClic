@@ -6,7 +6,7 @@
   <meta name="description" content="Compra productos de barbería premium en CortaClic.">
   <title>Tienda – CortaClic</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
@@ -17,13 +17,12 @@
   <main class="page-container fade-up">
 
     <div class="page-hero">
-      <p class="page-hero__tag"><i class="bi bi-shop mr-1"></i>Tienda</p>
-      <h1 class="page-hero__title">Productos Premium</h1>
+      <h1 class="page-hero__title">Productos</h1>
       <p class="page-hero__sub">Lleva la barbería a casa con nuestros productos.</p>
     </div>
 
     <div class="search-bar">
-      <i class="bi bi-search si"></i>
+      <i class="fa fa-search si"></i>
       <input type="text" id="search-prod" placeholder="Buscar producto...">
     </div>
 
@@ -37,66 +36,12 @@
 
     <div class="row" id="prod-list" style="margin: 0 -6px;">
 
-      <div class="col-6 col-md-3 mb-3 px-2" data-cat="Pomadas">
-        <div class="product-card" data-toggle="modal" data-target="#prodModal"
-             data-name="Pomada Matt Effect" data-price="$18.00" data-cat="Pomadas"
-             data-emoji="🫙" data-grad="g2" data-stock="12"
-             data-desc="Pomada con acabado mate ideal para looks naturales. Fijación fuerte sin brillo, perfecta para estilos modernos y texturizados.">
-          <div class="product-card__img g2">🫙</div>
-          <div class="product-card__body">
-            <div class="product-card__cat">Pomadas</div>
-            <div class="product-card__name">Pomada Matt Effect</div>
-            <div class="product-card__price">$18.00</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3 mb-3 px-2" data-cat="Pomadas">
-        <div class="product-card" data-toggle="modal" data-target="#prodModal"
-             data-name="Cera Moldeadora" data-price="$17.00" data-cat="Pomadas"
-             data-emoji="🫙" data-grad="g6" data-stock="8"
-             data-desc="Cera de alta fijación con acabado brillante. Ideal para estilos clásicos y peinados con volumen. Fórmula enriquecida con aceite de argán.">
-          <div class="product-card__img g6">🫙</div>
-          <div class="product-card__body">
-            <div class="product-card__cat">Pomadas</div>
-            <div class="product-card__name">Cera Moldeadora</div>
-            <div class="product-card__price">$17.00</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3 mb-3 px-2" data-cat="Barba">
-        <div class="product-card" data-toggle="modal" data-target="#prodModal"
-             data-name="Aceite de Barba" data-price="$22.00" data-cat="Barba"
-             data-emoji="💧" data-grad="g5" data-stock="15"
-             data-desc="Aceite premium para barba con mezcla de aceites naturales: jojoba, argán y vitamina E. Hidrata, suaviza y deja un aroma fresco y masculino.">
-          <div class="product-card__img g5">💧</div>
-          <div class="product-card__body">
-            <div class="product-card__cat">Barba</div>
-            <div class="product-card__name">Aceite de Barba</div>
-            <div class="product-card__price">$22.00</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-6 col-md-3 mb-3 px-2" data-cat="Barba">
-        <div class="product-card" data-toggle="modal" data-target="#prodModal"
-             data-name="Bálsamo Hidratante" data-price="$19.00" data-cat="Barba"
-             data-emoji="🧴" data-grad="g3" data-stock="6"
-             data-desc="Bálsamo de barba ultra hidratante con manteca de karité y cera de abejas. Controla el frizz, suaviza y facilita el peinado de la barba.">
-          <div class="product-card__img g3">🧴</div>
-          <div class="product-card__body">
-            <div class="product-card__cat">Barba</div>
-            <div class="product-card__name">Bálsamo Hidratante</div>
-            <div class="product-card__price">$19.00</div>
-          </div>
-        </div>
-      </div>
+      <!-- Generado dinámicamente -->
 
     </div>
 
     <div class="empty-state d-none" id="empty-prod">
-      <i class="bi bi-bag-x d-block"></i>
+      <i class="fa fa-times-circle d-block"></i>
       <h3>Sin productos</h3>
       <p>No encontramos productos con ese filtro.</p>
     </div>
@@ -110,22 +55,22 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header border-0 pb-0">
-          <button type="button" class="close" data-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-times"></i></button>
         </div>
         <div class="modal-body pt-0">
-          <div id="prod-modal-img" class="modal-img g2">🫙</div>
+          <div id="prod-modal-img" class="modal-img g2"><i class="fa fa-shopping-bag"></i></div>
           <div class="d-flex align-items-center justify-content-between flex-wrap mb-1">
             <h2 class="modal-title" id="prod-modal-name">—</h2>
             <span id="prod-modal-cat-badge"
                   style="font-size:.72rem; font-weight:700; padding:4px 12px; border-radius:999px;
                          background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.3); color:#F59E0B;">
-              Pomadas
+              —
             </span>
           </div>
           <div class="modal-price mb-1" id="prod-modal-price">—</div>
           <div class="modal-meta mb-2">
             <div class="modal-meta-item">
-              <i class="bi bi-box-seam"></i>
+              <i class="fa fa-archive"></i>
               <span id="prod-modal-stock">— en stock</span>
             </div>
           </div>
@@ -134,7 +79,7 @@
         <div class="modal-footer">
           <button class="btn-ghost mr-2" data-dismiss="modal">Cerrar</button>
           <button id="btn-add-cart" class="btn-accent" onclick="handleAddCart()">
-            <i class="bi bi-bag-plus"></i> Agregar al Carrito
+            <i class="fa fa-cart-plus"></i> Agregar
           </button>
         </div>
       </div>
@@ -145,52 +90,159 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/site.js"></script>
   <script>
-    document.querySelectorAll('.product-card').forEach(c => {
-      c.addEventListener('click', () => {
-        const d = c.dataset;
-        const img = document.getElementById('prod-modal-img');
-        img.textContent = d.emoji;
-        img.className = 'modal-img ' + d.grad;
-        document.getElementById('prod-modal-name').textContent        = d.name;
-        document.getElementById('prod-modal-price').textContent       = d.price;
-        document.getElementById('prod-modal-cat-badge').textContent   = d.cat;
-        document.getElementById('prod-modal-stock').textContent       = d.stock + ' en stock';
-        document.getElementById('prod-modal-desc').textContent        = d.desc;
-      });
+    let productosData = [];
+    let selectedProduct = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProductos();
+      renderProductos();
+      setupFilters();
     });
+
+    async function loadProductos() {
+      try {
+        const res = await fetch('/api/productos');
+        const data = await res.json();
+        if (data.ok) {
+          productosData = data.productos;
+        }
+      } catch (err) {
+        console.error('Error cargando productos:', err);
+      }
+    }
+
+    function renderProductos() {
+      const list = document.getElementById('prod-list');
+      list.innerHTML = '';
+      
+      if (productosData.length === 0) {
+        document.getElementById('empty-prod').classList.remove('d-none');
+        document.getElementById('empty-prod').innerHTML = `
+          <i class="fa fa-times-circle d-block"></i>
+          <h3>Sin productos</h3>
+          <p>Actualmente no hay productos disponibles en la tienda.</p>
+        `;
+        return;
+      }
+
+      const q = document.getElementById('search-prod').value.toLowerCase();
+      const cat = document.querySelector('#prod-pills .pill.active')?.dataset.cat || 'Todos';
+      
+      let visible = 0;
+      productosData.forEach(p => {
+        const matchCat = cat === 'Todos' || p.categoria === cat;
+        const matchName = p.nombre.toLowerCase().includes(q);
+        
+        if (matchCat && matchName) {
+          visible++;
+          const priceStr = parseFloat(p.precio).toFixed(2);
+          
+          // Generar gradiente aleatorio/determinado
+          const grad = 'g' + ((p.id % 6) + 1);
+          // Si tiene imagen usala, si no, un emoji
+          let imgHtml = '';
+          if (p.imagen && p.imagen.startsWith('http')) {
+            imgHtml = `<div class="product-card__img" style="background-image:url('${p.imagen}'); background-size:cover; background-position:center;"></div>`;
+          } else {
+            const emoji = p.imagen || '🧴';
+            imgHtml = `<div class="product-card__img ${grad}">${emoji}</div>`;
+          }
+
+          const col = document.createElement('div');
+          col.className = 'col-6 col-md-3 mb-3 px-2';
+          col.innerHTML = `
+            <div class="product-card">
+              ${imgHtml}
+              <div class="product-card__body">
+                <div class="product-card__cat">${p.categoria}</div>
+                <div class="product-card__name">${p.nombre}</div>
+                <div class="product-card__price">$${priceStr}</div>
+              </div>
+            </div>
+          `;
+          
+          col.querySelector('.product-card').addEventListener('click', () => {
+            selectedProduct = p;
+            openModal(p, grad);
+          });
+          
+          list.appendChild(col);
+        }
+      });
+      
+      document.getElementById('empty-prod').classList.toggle('d-none', visible > 0);
+    }
+
+    function openModal(p, grad) {
+      const img = document.getElementById('prod-modal-img');
+      if (p.imagen && p.imagen.startsWith('http')) {
+        img.className = 'modal-img';
+        img.style.backgroundImage = `url('${p.imagen}')`;
+        img.style.backgroundSize = 'cover';
+        img.textContent = '';
+      } else {
+        img.className = 'modal-img ' + grad;
+        img.style.backgroundImage = 'none';
+        img.textContent = p.imagen || '🧴';
+      }
+      
+      document.getElementById('prod-modal-name').textContent = p.nombre;
+      document.getElementById('prod-modal-price').textContent = '$' + parseFloat(p.precio).toFixed(2);
+      document.getElementById('prod-modal-cat-badge').textContent = p.categoria;
+      document.getElementById('prod-modal-stock').textContent = p.stock + ' en stock';
+      document.getElementById('prod-modal-desc').textContent = p.descripcion || 'Sin descripción detallada.';
+      
+      $('#prodModal').modal('show');
+    }
 
     function handleAddCart() {
       if (!CC.isLoggedIn()) {
         window.location.href = '/login';
         return;
       }
+      if (!selectedProduct) return;
+      
+      let cart = JSON.parse(localStorage.getItem('cc_cart') || '[]');
+      const exist = cart.find(x => x.id === selectedProduct.id);
+      if (exist) {
+        if (exist.cantidad < selectedProduct.stock) {
+           exist.cantidad++;
+        } else {
+           alert('No hay más stock disponible de este producto.');
+           return;
+        }
+      } else {
+        cart.push({
+          id: selectedProduct.id,
+          nombre: selectedProduct.nombre,
+          precio: selectedProduct.precio,
+          imagen: selectedProduct.imagen,
+          cantidad: 1,
+          stock: selectedProduct.stock
+        });
+      }
+      
+      localStorage.setItem('cc_cart', JSON.stringify(cart));
       $('#prodModal').modal('hide');
-      window.location.href = '/carrito';
+      
+      // Mostrar feedback
+      const btn = document.createElement('div');
+      btn.innerHTML = `<div style="position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; padding:10px 20px; border-radius:30px; z-index:9999; box-shadow:0 4px 15px rgba(245,158,11,0.4); font-weight:600; display:flex; align-items:center; gap:8px;">
+        <i class="fa fa-check-circle"></i> Agregado al carrito
+      </div>`;
+      document.body.appendChild(btn);
+      setTimeout(() => btn.remove(), 2500);
     }
 
-    document.querySelectorAll('#prod-pills .pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('#prod-pills .pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        filterProds();
+    function setupFilters() {
+      document.querySelectorAll('#prod-pills .pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('#prod-pills .pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          renderProductos();
+        });
       });
-    });
-
-    document.getElementById('search-prod').addEventListener('input', filterProds);
-
-    function filterProds() {
-      const q   = document.getElementById('search-prod').value.toLowerCase();
-      const cat = document.querySelector('#prod-pills .pill.active').dataset.cat;
-      const cols = document.querySelectorAll('#prod-list [data-cat]');
-      let visible = 0;
-      cols.forEach(col => {
-        const matchCat  = cat === 'Todos' || col.dataset.cat === cat;
-        const matchName = col.querySelector('.product-card').dataset.name.toLowerCase().includes(q);
-        const show = matchCat && matchName;
-        col.style.display = show ? '' : 'none';
-        if (show) visible++;
-      });
-      document.getElementById('empty-prod').classList.toggle('d-none', visible > 0);
+      document.getElementById('search-prod').addEventListener('input', renderProductos);
     }
   </script>
 </body>

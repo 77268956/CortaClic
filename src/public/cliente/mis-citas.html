@@ -6,7 +6,7 @@
   <meta name="description" content="Consulta y gestiona todas tus citas en CortaClic.">
   <title>Mis Citas – CortaClic</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
@@ -20,8 +20,7 @@
 
     <!-- Hero -->
     <div class="page-hero">
-      <p class="page-hero__tag"><i class="bi bi-calendar-check mr-1"></i>Historial</p>
-      <h1 class="page-hero__title">Mis Citas</h1>
+      <h1 class="page-hero__title">Historial</h1>
       <p class="page-hero__sub">Gestiona tus reservas y citas agendadas.</p>
     </div>
 
@@ -47,11 +46,11 @@
 
     <!-- Empty State -->
     <div class="empty-state d-none" id="empty-state">
-      <i class="bi bi-calendar-x d-block"></i>
+      <i class="fa fa-calendar-x d-block"></i>
       <h3 id="empty-title">Sin citas por aquí</h3>
       <p id="empty-sub">No tienes citas agendadas en esta sección.</p>
       <a href="/servicios" class="btn-accent mt-2">
-        <i class="bi bi-plus-circle"></i> Agendar mi primera cita
+        <i class="fa fa-plus-circle"></i> Agendar mi primera cita
       </a>
     </div>
 
@@ -164,15 +163,15 @@
             ${badgeHtml}
           </div>
           <div class="cita-card__details">
-            <div class="cita-card__detail"><i class="bi bi-person-badge"></i> ${escapeHtml(c.barbero_nombre)}</div>
-            <div class="cita-card__detail"><i class="bi bi-calendar3"></i> ${fechaFormatted}</div>
-            <div class="cita-card__detail"><i class="bi bi-clock"></i> ${horaFormatted}</div>
-            <div class="cita-card__detail"><i class="bi bi-tag"></i> ${formatDollars(c.servicio_precio)}</div>
+            <div class="cita-card__detail"><i class="fa fa-person-badge"></i> ${escapeHtml(c.barbero_nombre)}</div>
+            <div class="cita-card__detail"><i class="fa fa-calendar"></i> ${fechaFormatted}</div>
+            <div class="cita-card__detail"><i class="fa fa-clock-o"></i> ${horaFormatted}</div>
+            <div class="cita-card__detail"><i class="fa fa-tag"></i> ${formatDollars(c.servicio_precio)}</div>
           </div>
           <div class="cita-card__footer">
             ${canCancel ? `
               <button class="btn-danger-ghost mr-2" onclick="cancelAppointment(${c.id})">
-                <i class="bi bi-x-circle mr-1"></i>Cancelar Cita
+                <i class="fa fa-x-circle mr-1"></i>Cancelar Cita
               </button>
             ` : ''}
           </div>

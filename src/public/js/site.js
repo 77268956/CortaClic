@@ -53,22 +53,22 @@ const CC = (() => {
       if (isAdminPath) {
         mhEl.innerHTML = `
           <div class="mobile-header__brand">
-            <i class="bi bi-shield-lock acc"></i>
+            <i class="fa fa-shield-lock acc"></i>
             Admin<span class="acc">Panel</span>
           </div>
           <div class="mobile-header__actions">
             <button class="btn-ghost" style="padding:4px 10px; font-size:.75rem;" onclick="CC.logout()">
-              <i class="bi bi-box-arrow-right"></i>
+              <i class="fa fa-sign-out"></i>
             </button>
           </div>`;
       } else {
         mhEl.innerHTML = `
           <div class="mobile-header__brand">
-            <i class="bi bi-scissors acc"></i>
+            <i class="fa fa-scissors acc"></i>
             Corta<span class="acc">Clic</span>
           </div>
           <div class="mobile-header__actions">
-            ${user ? `<a href="/carrito" class="icon-btn"><i class="bi bi-bag"></i><span class="cart-badge">0</span></a>` : ''}
+            ${user ? `<a href="/carrito" class="icon-btn"><i class="fa fa-shopping-bag"></i><span class="cart-badge">0</span></a>` : ''}
           </div>`;
       }
     }
@@ -81,7 +81,7 @@ const CC = (() => {
           <nav class="navbar navbar-expand-md desktop-navbar">
             <div class="container">
               <a class="navbar-brand" href="/admin/dashboard">
-                <i class="bi bi-shield-lock acc"></i>Corta<span class="acc">Clic</span> Admin
+                <i class="fa fa-shield-lock acc"></i>Corta<span class="acc">Clic</span> Admin
               </a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#dnMenu" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
@@ -97,12 +97,12 @@ const CC = (() => {
                 <ul class="navbar-nav">
                   <li class="nav-item">
                     <span class="nav-link text-warning" style="font-size:.85rem; font-weight:700;">
-                      <i class="bi bi-person-fill mr-1"></i>${user ? user.nombre.split(' ')[0] : 'Admin'}
+                      <i class="fa fa-person-fill mr-1"></i>${user ? user.nombre.split(' ')[0] : 'Admin'}
                     </span>
                   </li>
                   <li class="nav-item ml-2">
                     <button class="btn-nav-cta" onclick="CC.logout()">
-                      <i class="bi bi-box-arrow-right mr-1"></i>Salir
+                      <i class="fa fa-sign-out mr-1"></i>Salir
                     </button>
                   </li>
                 </ul>
@@ -113,22 +113,22 @@ const CC = (() => {
         const rightLinks = user
           ? `<li class="nav-item">
                <a class="nav-link ${path==='/mis-citas'?'active':''}" href="/mis-citas">
-                 <i class="bi bi-calendar-check mr-1"></i>Mis Citas
+                 <i class="fa fa-calendar-check-o mr-1"></i>Mis Citas
                </a>
              </li>
              <li class="nav-item">
                <a class="nav-link ${path==='/perfil'?'active':''}" href="/perfil">
-                 <i class="bi bi-person mr-1"></i>${user.nombre.split(' ')[0]}
+                 <i class="fa fa-user mr-1"></i>${user.nombre.split(' ')[0]}
                </a>
              </li>
              <li class="nav-item ml-2">
                <a class="nav-link ${path==='/carrito'?'active':''}" href="/carrito" title="Carrito">
-                 <i class="bi bi-bag"></i>
+                 <i class="fa fa-shopping-bag"></i>
                </a>
              </li>
              <li class="nav-item ml-1">
                <button class="btn-nav-cta" onclick="CC.logout()">
-                 <i class="bi bi-box-arrow-right mr-1"></i>Salir
+                 <i class="fa fa-sign-out mr-1"></i>Salir
                </button>
              </li>`
           : `<li class="nav-item ml-2">
@@ -139,7 +139,7 @@ const CC = (() => {
           <nav class="navbar navbar-expand-md desktop-navbar">
             <div class="container">
               <a class="navbar-brand" href="/">
-                <i class="bi bi-scissors acc"></i>Corta<span class="acc">Clic</span>
+                <i class="fa fa-scissors acc"></i>Corta<span class="acc">Clic</span>
               </a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#dnMenu" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
@@ -163,38 +163,38 @@ const CC = (() => {
       if (isAdminPath) {
         bnEl.innerHTML = `
           <a href="/admin/dashboard" class="bottom-nav__item ${path==='/admin/dashboard'?'active':''}">
-            <i class="bi bi-speedometer2"></i><span>Inicio</span>
+            <i class="fa fa-speedometer2"></i><span>Inicio</span>
           </a>
           <a href="/admin/barberos" class="bottom-nav__item ${path==='/admin/barberos'?'active':''}">
-            <i class="bi bi-people"></i><span>Barberos</span>
+            <i class="fa fa-users"></i><span>Barberos</span>
           </a>
           <a href="/admin/servicios" class="bottom-nav__item ${path==='/admin/servicios'?'active':''}">
-            <i class="bi bi-scissors"></i><span>Servicios</span>
+            <i class="fa fa-scissors"></i><span>Servicios</span>
           </a>
           <a href="/admin/productos" class="bottom-nav__item ${path==='/admin/productos'?'active':''}">
-            <i class="bi bi-box-seam"></i><span>Productos</span>
+            <i class="fa fa-archive"></i><span>Productos</span>
           </a>
           <a href="/admin/historial" class="bottom-nav__item ${path==='/admin/historial'?'active':''}">
-            <i class="bi bi-clock-history"></i><span>Historial</span>
+            <i class="fa fa-clock-history"></i><span>Historial</span>
           </a>`;
       } else {
         const profileItem = user
           ? `<a href="/perfil" class="bottom-nav__item ${path==='/perfil'?'active':''}">
-               <i class="bi bi-person${path==='/perfil'?'-fill':''}"></i><span>Perfil</span>
+               <i class="fa fa-user${path==='/perfil'?'-fill':''}"></i><span>Perfil</span>
              </a>`
           : `<a href="/login" class="bottom-nav__item ${path==='/login'?'active':''}">
-               <i class="bi bi-box-arrow-in-right"></i><span>Entrar</span>
+               <i class="fa fa-box-arrow-in-right"></i><span>Entrar</span>
              </a>`;
 
         bnEl.innerHTML = `
           <a href="/" class="bottom-nav__item ${path==='/'?'active':''}">
-            <i class="bi bi-house${path==='/'?'-fill':''}"></i><span>Inicio</span>
+            <i class="fa fa-home${path==='/'?'-fill':''}"></i><span>Inicio</span>
           </a>
           <a href="/tienda" class="bottom-nav__item ${path==='/tienda'?'active':''}">
-            <i class="bi bi-shop${path==='/tienda'?'-window':''}"></i><span>Tienda</span>
+            <i class="fa fa-shopping-bag${path==='/tienda'?'-window':''}"></i><span>Tienda</span>
           </a>
           <a href="/mis-citas" class="bottom-nav__item ${path==='/mis-citas'?'active':''}">
-            <i class="bi bi-calendar${path==='/mis-citas'?'-check-fill':''}"></i><span>Mis Citas</span>
+            <i class="fa fa-calendar${path==='/mis-citas'?'-check-fill':''}"></i><span>Mis Citas</span>
           </a>
           ${profileItem}`;
       }
@@ -231,7 +231,7 @@ const CC = (() => {
     const el = document.getElementById(id);
     if (!el) return;
     el.className = `cc-alert cc-alert-${type} show`;
-    el.innerHTML = `<i class="bi bi-${type==='err'?'exclamation-circle':'check-circle'}"></i> ${msg}`;
+    el.innerHTML = `<i class="fa fa-${type==='err'?'exclamation-circle':'check-circle'}"></i> ${msg}`;
   }
 
   function hideAlert(id) {

@@ -1,13 +1,10 @@
 const { Router } = require('express');
+const { authenticate } = require('../middlewares/auth');
+const { createVenta } = require('../controllers/ventaController');
 
 const router = Router();
 
-router.get('/', (req, res) => {
-	res.status(200).json({
-		ok: true,
-		section: 'ventas',
-		message: 'Ruta de ventas lista',
-	});
-});
+// Todas las ventas requieren que el usuario esté autenticado
+router.post('/', authenticate, createVenta);
 
 module.exports = router;
