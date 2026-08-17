@@ -275,3 +275,55 @@ exports.cancelarCita = async (req, res) => {
     return res.status(500).json({ ok: false, message: 'Error al cancelar la cita.' });
   }
 };
+
+/**
+ * GET /api/citas/:id/ticket
+ * Genera el ticket en PDF de una cita existente
+ */
+exports.descargarTicket = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Buscar la cita en la base de datos
+    const cita = await Cita.findById(Number(id));
+    if (!cita) {
+      return res.status(404).json({ ok: false, message: 'La cita especificada no existe.' });
+    }
+
+    // 2. Traer la información complementaria (Servicio y Barbero)
+    const servicio = await Servicio.findById(cita.servicioId);
+    const barbero = await Barbero.findById(cita.barberoId);
+
+    // Formatear la fecha y hora para mostrarla bonita en el ticket
+    const fechaHora = new Date(cita.fechaHora);
+    const fechaCita = fechaHora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const horaCita = fechaHora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+    // 3. Estructurar los datos limpios para el pdfHelper
+    const datosTicket = {
+      id: cita.id,
+      cliente: req.user?.nombre || 'Cliente Peluquería',
+      barbero: barbero ? barbero.nombre : 'No asignado',
+      servicio: servicio ? servicio.nombre : 'Servicio General',
+      precio: servicio ? servicio.precio : 0,
+      fecha: fechaCita,
+      hora: horaCita
+    };
+
+    // 4. Generar el PDF en memoria llamando a tu utilitario
+    const ticketBuffer = await generarTicketBuffer(datosTicket);
+
+    // 5. Configurar cabeceras y responder con el documento PDF
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename=ticket_cita_${id}.pdf`);
+    
+    return res.end(ticketBuffer);
+
+  } catch (err) {
+    console.error('[citaController.descargarTicket]', err);
+    return res.status(500).json({ ok: false, message: 'Error al generar el ticket de la cita.' });
+  }
+};
+
+
+

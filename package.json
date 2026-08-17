@@ -19,7 +19,8 @@
     "express": "^5.2.1",
     "googleapis": "^174.0.1",
     "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.23.2"
+    "mysql2": "^3.23.2",
+    "puppeteer": "^25.8.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

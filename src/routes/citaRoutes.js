@@ -1,5 +1,11 @@
 const { Router } = require('express');
-const { getDisponibilidad, crearCita, getMisCitas, cancelarCita } = require('../controllers/citaController');
+const { 
+  getDisponibilidad, 
+  crearCita, 
+  getMisCitas, 
+  cancelarCita,
+  descargarTicket 
+} = require('../controllers/citaController');
 const { authenticate } = require('../middlewares/auth');
 
 const router = Router();
@@ -11,5 +17,8 @@ router.get('/disponibilidad', getDisponibilidad);
 router.post('/', authenticate, crearCita);
 router.get('/mis-citas', authenticate, getMisCitas);
 router.patch('/:id/cancelar', authenticate, cancelarCita);
+
+//  2. Nueva ruta protegida para renderizar y obtener el ticket PDF
+router.get('/:id/ticket', authenticate, descargarTicket);
 
 module.exports = router;

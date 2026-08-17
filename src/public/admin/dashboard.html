@@ -695,6 +695,17 @@
         console.error('Error update cita:', e);
       }
     }
+
+    /**
+     * Abre el ticket de la cita completada en una nueva pestaña listo para imprimir
+     * @param {number|string} id - ID de la cita finalizada
+     */
+    function abrirTicketCitaCompletada(id) {
+        // Usamos el método seguro para evitar que el navegador bloquee la ventana emergente
+        const nuevaVentana = window.open('about:blank', '_blank');
+        nuevaVentana.location.href = `/api/citas/${id}/ticket`;
+    }
+
   </script>
 </body>
 </html>
