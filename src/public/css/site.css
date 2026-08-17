@@ -792,6 +792,10 @@ a { text-decoration: none; color: inherit; }
 .cc-input-icon .cc-input { padding-left: 38px; }
 
 select.cc-input { cursor: pointer; }
+select.cc-input option {
+  background: var(--bg);
+  color: var(--text);
+}
 
 /* Alert */
 .cc-alert {

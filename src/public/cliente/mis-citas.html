@@ -61,6 +61,7 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/js/site.js"></script>
   <script>
     CC.requireAuth([2]);
@@ -182,7 +183,19 @@
     }
 
     async function cancelAppointment(citaId) {
-      if (!confirm('¿Estás seguro de que deseas cancelar esta cita?')) return;
+      const result = await Swal.fire({
+        title: '¿Cancelar cita?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#EF4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Sí, cancelar',
+        cancelButtonText: 'No, mantener',
+        background: '#131b27',
+        color: '#F9FAFB'
+      });
+      if (!result.isConfirmed) return;
 
       try {
         const token = CC.getToken();

@@ -6,7 +6,11 @@ const Barbero = require('../models/Barbero');
  */
 exports.getBarberos = async (req, res) => {
   try {
-    const barberos = await Barbero.findAll();
+    const barberosRaw = await Barbero.findAll();
+    const barberos = await Promise.all(barberosRaw.map(async b => {
+      const horarios = await Barbero.getHorarios(b.id);
+      return { ...b, horarios };
+    }));
     return res.status(200).json({ ok: true, barberos });
   } catch (err) {
     console.error('[barberoController.getBarberos]', err);

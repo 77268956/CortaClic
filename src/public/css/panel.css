@@ -136,6 +136,7 @@ body.split-mode {
   overflow: auto;
   position: relative;
   background: var(--bg);
+  -webkit-overflow-scrolling: touch;
 }
 .sched-table {
   width: 100%;

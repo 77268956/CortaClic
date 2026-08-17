@@ -227,16 +227,37 @@ const CC = (() => {
   }
 
   /* ── UI helpers ──────────────────────────────────── */
+  const Toast = window.Swal ? Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    background: 'var(--surface)',
+    color: 'var(--text)',
+    customClass: {
+      popup: 'border border-warning'
+    }
+  }) : null;
+
   function showAlert(id, msg, type = 'err') {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.className = `cc-alert cc-alert-${type} show`;
-    el.innerHTML = `<i class="fa fa-${type==='err'?'exclamation-circle':'check-circle'}"></i> ${msg}`;
+    if (Toast) {
+      Toast.fire({
+        icon: type === 'err' ? 'error' : 'success',
+        title: msg
+      });
+    } else {
+      // Fallback
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.className = `cc-alert cc-alert-${type} show`;
+      el.innerHTML = `<i class="fa fa-${type==='err'?'exclamation-circle':'check-circle'}"></i> ${msg}`;
+    }
   }
 
   function hideAlert(id) {
     const el = document.getElementById(id);
-    if (el) el.className = 'cc-alert';
+    if (el) el.className = 'cc-alert d-none';
   }
 
   function setLoading(btnId, loading, text = '') {

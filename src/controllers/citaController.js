@@ -51,6 +51,16 @@ exports.getDisponibilidad = async (req, res) => {
       listBarberos = await Barbero.findAll();
     }
 
+    // Obtener horarios de cada barbero para filtrar slots
+    const barberoHorariosMap = {};
+    for (const b of listBarberos) {
+      const horarios = await Barbero.getHorarios(b.id);
+      barberoHorariosMap[b.id] = horarios; // [{dia_semana, hora_inicio, hora_fin}, ...]
+    }
+
+    // Conjunto de días (1=Mon ..7=Sun) donde al menos un barbero tiene horario disponible
+    const allowedDaysSet = new Set();
+
     if (listBarberos.length === 0) {
       return res.status(400).json({ ok: false, message: 'No hay barberos registrados en el sistema.' });
     }
@@ -75,17 +85,46 @@ exports.getDisponibilidad = async (req, res) => {
           }
         }
 
+        // Determinar día de la semana en formato DB (1=Mon ..7=Sun)
+        const jsDay = new Date(slotDateTimeStr).getDay(); // 0=Sun
+        const dbDay = jsDay === 0 ? 7 : jsDay; // convierte a 1..7
+        // Añadir día al conjunto de días permitidos (solo si hay algún horario en la DB)
+        for (const b of listBarberos) {
+          const horarios = barberoHorariosMap[b.id] || [];
+          if (horarios.some(hor => hor.dia_semana === dbDay)) {
+            allowedDaysSet.add(dbDay);
+          }
+        }
+
         let isAvailable = false;
         let assignedBarberId = null;
 
         if (!slotIsPast) {
-          // Verificar disponibilidad entre los barberos candidatos
+          // Verificar disponibilidad entre los barberos candidatos, respetando sus horarios
+          slotCheck:
           for (let b of listBarberos) {
+            const horarios = barberoHorariosMap[b.id] || [];
+            // Verificar si este barbero trabaja en este día y hora
+            let worksNow = false;
+            for (const hor of horarios) {
+              if (hor.dia_semana !== dbDay) continue;
+              const [hStart, mStart] = hor.hora_inicio.split(':').map(Number);
+              const [hEnd, mEnd] = hor.hora_fin.split(':').map(Number);
+              const startMin = hStart * 60 + mStart;
+              const endMin = hEnd * 60 + mEnd;
+              const slotMin = h * 60 + m;
+              if (slotMin >= startMin && slotMin + duracion <= endMin) {
+                worksNow = true;
+                break;
+              }
+            }
+            if (!worksNow) continue; // barbero no trabaja en este slot
+
             const free = await Cita.isBarberAvailable(b.id, slotDateTimeStr, duracion);
             if (free) {
               isAvailable = true;
               assignedBarberId = b.id;
-              break; // Con 1 barbero libre alcanza
+              break slotCheck; // con 1 barbero libre basta
             }
           }
         }
@@ -98,7 +137,10 @@ exports.getDisponibilidad = async (req, res) => {
       }
     }
 
-    return res.status(200).json({ ok: true, fecha, slots });
+    // Convertir el set a array para enviarlo al cliente
+    const allowedDays = Array.from(allowedDaysSet);
+
+    return res.status(200).json({ ok: true, fecha, slots, dias: allowedDays });
   } catch (err) {
     console.error('[citaController.getDisponibilidad]', err);
     return res.status(500).json({ ok: false, message: 'Error al consultar disponibilidad.' });

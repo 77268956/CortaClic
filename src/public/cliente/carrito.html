@@ -85,6 +85,7 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/js/site.js"></script>
   <script>
     CC.requireAuth([2]);
@@ -173,15 +174,27 @@
       if (newVal < 1) {
         removeItem(index);
       } else if (newVal > item.stock) {
-        alert('Stock máximo alcanzado.');
+        Swal.fire({ icon: 'warning', title: 'Stock máximo', text: 'No puedes agregar más unidades de este producto.', background: '#131b27', color: '#F9FAFB' });
       } else {
         item.cantidad = newVal;
         saveCart();
       }
     }
 
-    function removeItem(index) {
-      if (confirm('¿Eliminar producto del carrito?')) {
+    async function removeItem(index) {
+      const result = await Swal.fire({
+        title: '¿Eliminar producto?',
+        text: 'Se quitará este producto de tu carrito.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#F59E0B',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#131b27',
+        color: '#F9FAFB'
+      });
+      if (result.isConfirmed) {
         cart.splice(index, 1);
         saveCart();
       }
@@ -210,11 +223,11 @@
           renderCart();
           $('#payModal').modal('show');
         } else {
-          alert(data.message || 'Error al procesar la compra.');
+          Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'Error al procesar la compra.', background: '#131b27', color: '#F9FAFB' });
         }
       } catch (e) {
         console.error(e);
-        alert('Ocurrió un error al procesar el pago.');
+        Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Ocurrió un error al procesar el pago.', background: '#131b27', color: '#F9FAFB' });
       }
     }
   </script>

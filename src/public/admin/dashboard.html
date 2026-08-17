@@ -127,7 +127,9 @@
             <div class="row">
               <div class="col-6 mb-3">
                 <label class="cc-label">Hora Inicio</label>
-                <input type="time" id="walkin-hora" class="cc-input" required>
+                <select id="walkin-hora" class="cc-input" required>
+                  <option value="">Cargando...</option>
+                </select>
               </div>
               <div class="col-6 mb-3">
                 <label class="cc-label">Fecha</label>
@@ -167,6 +169,7 @@
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="/js/site.js"></script>
   <script src="/js/split-view.js"></script>
   
@@ -202,6 +205,11 @@
       // Initial renders
       setCalMode('week'); // triggers loadCalendar
       loadAgenda();
+
+      // Walkin event listeners
+      document.getElementById('walkin-barbero').addEventListener('change', loadWalkinAvailability);
+      document.getElementById('walkin-servicio').addEventListener('change', loadWalkinAvailability);
+      document.getElementById('walkin-fecha').addEventListener('change', loadWalkinAvailability);
     });
 
     async function fetchBarberos() {
@@ -373,6 +381,8 @@
     }
 
     function plotCitas() {
+      const cellsMap = new Map();
+
       citasData.forEach(c => {
         const dt = new Date(c.fecha_hora);
         const h = dt.getHours();
@@ -390,14 +400,28 @@
         }
 
         if (targetCell) {
-          const topPct = (m / 60) * 100;
+          if(!cellsMap.has(targetCell)) cellsMap.set(targetCell, []);
+          cellsMap.get(targetCell).push({ cita: c, m: m });
+        }
+      });
+
+      cellsMap.forEach((events, cell) => {
+        const count = events.length;
+        const widthPct = 100 / count;
+        
+        events.forEach((evData, idx) => {
+          const c = evData.cita;
+          const topPct = (evData.m / 60) * 100;
           // Approx 1hr duration (60px)
           const height = 55; 
+          const leftPct = widthPct * idx;
           
           const ev = document.createElement('div');
           ev.className = `event-block estado-${c.estado}`;
           ev.style.top = `${topPct}%`;
           ev.style.height = `${height}px`;
+          ev.style.width = `calc(${widthPct}% - 4px)`;
+          ev.style.left = `calc(${leftPct}% + 2px)`;
           
           const sName = c.servicio_nombre || 'Servicio';
           const uName = c.cliente_nombre || 'Cliente';
@@ -409,8 +433,8 @@
              e.stopPropagation();
              openGestorCita(c);
           };
-          targetCell.appendChild(ev);
-        }
+          cell.appendChild(ev);
+        });
       });
     }
 
@@ -542,7 +566,45 @@
 
     // --- Walkin Modal ---
     function openWalkinModal() {
+      loadWalkinAvailability();
       $('#walkinModal').modal('show');
+    }
+
+    async function loadWalkinAvailability() {
+      const barbero_id = document.getElementById('walkin-barbero').value;
+      const servicio_id = document.getElementById('walkin-servicio').value;
+      const fecha = document.getElementById('walkin-fecha').value;
+      const horaSelect = document.getElementById('walkin-hora');
+
+      if (!barbero_id || !servicio_id || !fecha) {
+        horaSelect.innerHTML = '<option value="">Completa otros campos</option>';
+        return;
+      }
+
+      horaSelect.innerHTML = '<option value="">Cargando horarios...</option>';
+      try {
+        const url = `/api/citas/disponibilidad?barbero_id=${barbero_id}&fecha=${fecha}&servicio_id=${servicio_id}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        horaSelect.innerHTML = '';
+        if (data.ok && Array.isArray(data.slots) && data.slots.length > 0) {
+          let hasAvailable = false;
+          data.slots.forEach(s => {
+            if (s.disponible) {
+              horaSelect.innerHTML += `<option value="${s.hora}">${s.hora}</option>`;
+              hasAvailable = true;
+            }
+          });
+          if (!hasAvailable) {
+            horaSelect.innerHTML = '<option value="">Sin disponibilidad</option>';
+          }
+        } else {
+          horaSelect.innerHTML = '<option value="">Sin disponibilidad</option>';
+        }
+      } catch(err) {
+        horaSelect.innerHTML = '<option value="">Error al cargar</option>';
+      }
     }
 
     async function saveWalkin() {
@@ -552,7 +614,7 @@
       const hora = document.getElementById('walkin-hora').value;
       const fecha = document.getElementById('walkin-fecha').value;
 
-      if(!cliente_nombre || !hora || !fecha) return alert('Completa los datos');
+      if(!cliente_nombre || !hora || !fecha) return Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Completa los datos requeridos', background: 'var(--surface)', color: 'var(--text-1)' });
 
       const fecha_hora = `${fecha} ${hora}:00`;
 
@@ -573,7 +635,7 @@
           loadAgenda();
           loadCalendar();
         } else {
-          alert(data.message || 'Error');
+          Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'Error', background: 'var(--surface)', color: 'var(--text-1)' });
         }
       } catch (err) {
         console.error('Error walkin:', err);
@@ -627,7 +689,7 @@
           loadAgenda();
           loadCalendar();
         } else {
-          alert(data.message || 'Error');
+          Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'Error', background: 'var(--surface)', color: 'var(--text-1)' });
         }
       } catch (e) {
         console.error('Error update cita:', e);
