@@ -1,16 +1,32 @@
 const { verifyToken } = require('../config/jwt');
 
+const getTokenFromRequest = (req) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+
+  if (req.query && req.query.token) {
+    return req.query.token;
+  }
+
+  if (req.headers['x-access-token']) {
+    return req.headers['x-access-token'];
+  }
+
+  return null;
+};
+
 /**
  * Middleware: verifica Bearer token en el header Authorization.
  * Agrega req.user con el payload decodificado.
  */
 const authenticate = (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const token = getTokenFromRequest(req);
+    if (!token) {
       return res.status(401).json({ ok: false, message: 'Token requerido.' });
     }
-    const token = authHeader.split(' ')[1];
     req.user = verifyToken(token);
     next();
   } catch {

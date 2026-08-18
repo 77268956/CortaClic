@@ -75,6 +75,7 @@
                 <th>Fecha / Hora</th>
                 <th>Total</th>
                 <th>Estado</th>
+                <th>Ticket</th>
               </tr>
             </thead>
             <tbody id="hist-table-body"></tbody>
@@ -175,6 +176,10 @@
         const fecha = dt.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
         const hora  = dt.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
         const est   = ESTADO_MAP[c.estado] || { label: 'Desconocido', cls: 'sbadge-pending' };
+        const ticketBtn = c.estado === 3 
+          ? `<button class="btn-ghost" style="padding:4px 8px; font-size:.78rem;" onclick="downloadTicket(${c.id})" title="Descargar Ticket"><i class="fa fa-download mr-1"></i>Ticket</button>`
+          : '<span style="color:var(--text-3); font-size:.78rem;">—</span>';
+
         return `
           <tr>
             <td style="color:var(--text-3);">${i + 1}</td>
@@ -184,6 +189,7 @@
             <td style="white-space:nowrap;">${fecha}<br><span style="color:var(--text-3); font-size:.75rem;">${hora}</span></td>
             <td style="color:var(--accent); font-weight:700;">$${parseFloat(c.servicio_precio || 0).toFixed(2)}</td>
             <td><span class="sbadge ${est.cls}">${est.label}</span></td>
+            <td>${ticketBtn}</td>
           </tr>
         `;
       }).join('');
@@ -196,6 +202,14 @@
         const fecha = dt.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
         const hora  = dt.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
         const est   = ESTADO_MAP[c.estado] || { label: 'Desconocido', cls: 'sbadge-pending' };
+        const ticketBtn = c.estado === 3
+          ? `<div class="mt-2 text-right">
+               <button class="btn-ghost" style="padding:5px 10px; font-size:.8rem;" onclick="downloadTicket(${c.id})">
+                 <i class="fa fa-download mr-1"></i>Descargar Ticket
+               </button>
+             </div>`
+          : '';
+
         return `
           <div class="admin-hist-card">
             <div class="admin-hist-card__top">
@@ -214,9 +228,37 @@
             <div class="admin-hist-card__meta">
               <span><i class="fa fa-calendar mr-1" style="color:var(--text-3)"></i>${fecha} · ${hora}</span>
             </div>
+            ${ticketBtn}
           </div>
         `;
       }).join('');
+    }
+
+    async function downloadTicket(citaId) {
+      try {
+        const token = CC.getToken();
+        const res = await fetch(`/api/citas/${citaId}/ticket`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+          CC.showAlert('hist-alert', 'No se pudo descargar el ticket.', 'err');
+          return;
+        }
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ticket_cita_${citaId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Error al descargar ticket:', err);
+        CC.showAlert('hist-alert', 'Error de conexión al descargar el ticket.', 'err');
+      }
     }
 
     function esc(str) {

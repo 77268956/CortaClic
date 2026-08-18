@@ -67,4 +67,12 @@ async function create({ nombre, email, telefono, hashedPassword }) {
   return { id: result.insertId, nombre, email, telefono: telefono || null, rol: 2 };
 }
 
-module.exports = { findByEmail, findByGoogleId, linkGoogleId, createFromGoogle, create };
+async function findById(id) {
+  const [rows] = await pool.execute(
+    'SELECT * FROM usuarios WHERE id = ? AND deleted_at IS NULL LIMIT 1',
+    [id]
+  );
+  return rows.length > 0 ? rows[0] : null;
+}
+
+module.exports = { findByEmail, findByGoogleId, linkGoogleId, createFromGoogle, create, findById };

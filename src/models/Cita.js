@@ -61,6 +61,7 @@ async function findByCliente(clienteId) {
       c.servicio_id,
       c.fecha_hora,
       c.estado,
+      c.ticket_path,
       c.creado_en,
       s.nombre AS servicio_nombre,
       s.precio AS servicio_precio,
@@ -96,6 +97,33 @@ async function cancel(id, clienteId) {
 }
 
 /**
+ * Obtiene una cita por su ID.
+ * @param {number} id
+ * @returns {object|null}
+ */
+async function findById(id) {
+  const [rows] = await pool.execute(`
+    SELECT id, cliente_id, barbero_id, servicio_id, fecha_hora, estado, ticket_path, creado_en
+    FROM citas
+    WHERE id = ? AND deleted_at IS NULL
+    LIMIT 1
+  `, [id]);
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const row = rows[0];
+  return {
+    ...row,
+    clienteId: row.cliente_id,
+    barberoId: row.barbero_id,
+    servicioId: row.servicio_id,
+    fechaHora: row.fecha_hora
+  };
+}
+
+/**
  * Verifica si un barbero tiene empalme de citas en un rango de tiempo.
  * @param {number} barberoId
  * @param {string} fechaHoraInicio YYYY-MM-DD HH:mm:ss
@@ -121,10 +149,24 @@ async function isBarberAvailable(barberoId, fechaHoraInicio, duracionMinutos) {
   return rows.length === 0;
 }
 
+/**
+ * Guarda la ruta del ticket PDF generado en la cita.
+ * @param {number} citaId
+ * @param {string} ticketPath
+ */
+async function saveTicketPath(citaId, ticketPath) {
+  await pool.execute(
+    'UPDATE citas SET ticket_path = ? WHERE id = ?',
+    [ticketPath, citaId]
+  );
+}
+
 module.exports = {
   create,
   findAppointmentsByDate,
   findByCliente,
   cancel,
-  isBarberAvailable
+  findById,
+  isBarberAvailable,
+  saveTicketPath
 };

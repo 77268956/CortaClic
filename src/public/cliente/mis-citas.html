@@ -175,6 +175,11 @@
                 <i class="fa fa-x-circle mr-1"></i>Cancelar Cita
               </button>
             ` : ''}
+            ${c.estado === 3 ? `
+              <button class="btn-ghost" onclick="downloadTicket(${c.id})" style="font-size:.82rem;">
+                <i class="fa fa-download mr-1"></i>Descargar Ticket
+              </button>
+            ` : ''}
           </div>
         `;
 
@@ -216,6 +221,33 @@
       } catch (err) {
         console.error('Error al cancelar cita:', err);
         CC.showAlert('citas-alert', 'Error de conexión. Intenta de nuevo.', 'err');
+      }
+    }
+
+    async function downloadTicket(citaId) {
+      try {
+        const token = CC.getToken();
+        const res = await fetch(`/api/citas/${citaId}/ticket`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+          CC.showAlert('citas-alert', 'No se pudo descargar el ticket.', 'err');
+          return;
+        }
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ticket_cita_${citaId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Error al descargar ticket:', err);
+        CC.showAlert('citas-alert', 'Error de conexión al descargar el ticket.', 'err');
       }
     }
 

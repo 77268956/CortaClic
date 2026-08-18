@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "migrate": "node -r dotenv/config ./node_modules/db-migrate/bin/db-migrate up",
+    "migrate:down": "node -r dotenv/config ./node_modules/db-migrate/bin/db-migrate down",
+    "migrate:create": "node -r dotenv/config ./node_modules/db-migrate/bin/db-migrate create",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +18,8 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
+    "db-migrate": "^0.11.14",
+    "db-migrate-mysql": "^3.0.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "googleapis": "^174.0.1",

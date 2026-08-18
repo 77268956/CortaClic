@@ -15,82 +15,173 @@ async function getBrowser() {
 const generarTicketBuffer = async (datos) => {
     const browser = await getBrowser();
     const page = await browser.newPage();
-    
+
     try {
+        const precio = Number(datos.precio || 0);
+        const formatearPrecio = (valor) => `$${Number(valor).toFixed(2)}`;
         const htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="utf-8">
             <style>
-                body { 
-                    width: 74mm; 
-                    margin: 0; 
-                    padding: 2mm; 
-                    font-family: 'Courier New', Courier, monospace; 
-                    font-size: 12px; 
-                    color: #000;
+                @page {
+                    size: 80mm 180mm;
+                    margin: 0;
                 }
-                .text-center { text-align: center; }
-                .text-right { text-align: right; }
-                .linea { border-top: 1px dashed #000; margin: 8px 0; }
-                table { width: 100%; border-collapse: collapse; }
-                td { padding: 4px 0; }
-                .total { font-size: 14px; font-weight: bold; }
+                * { box-sizing: border-box; }
+                body {
+                    width: 80mm;
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Segoe UI', Arial, sans-serif;
+                    background: #fff;
+                    color: #1b1b1b;
+                }
+                .ticket {
+                    width: 80mm;
+                    min-height: 180mm;
+                    padding: 12mm 8mm 8mm;
+                    background: #ffffff;
+                }
+                .brand {
+                    text-align: center;
+                    border-bottom: 2px dashed #111;
+                    padding-bottom: 8px;
+                    margin-bottom: 12px;
+                }
+                .brand h1 {
+                    margin: 0;
+                    font-size: 18px;
+                    letter-spacing: 1px;
+                }
+                .brand .sub {
+                    font-size: 11px;
+                    letter-spacing: 1.2px;
+                    color: #333;
+                    margin-top: 4px;
+                }
+                .title {
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                    margin: 8px 0 10px;
+                    text-transform: uppercase;
+                }
+                .info {
+                    margin: 8px 0;
+                    font-size: 11px;
+                    line-height: 1.5;
+                }
+                .info-row {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 8px;
+                    margin: 4px 0;
+                }
+                .label {
+                    font-weight: 700;
+                    color: #111;
+                }
+                .value {
+                    text-align: right;
+                    color: #222;
+                    font-weight: 500;
+                }
+                .divider {
+                    border-top: 1px dashed #111;
+                    margin: 10px 0;
+                }
+                .service-box {
+                    padding: 8px 0;
+                    font-size: 11px;
+                }
+                .service-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    gap: 6px;
+                    margin: 5px 0;
+                }
+                .service-name {
+                    flex: 1;
+                    word-break: break-word;
+                }
+                .total-box {
+                    margin-top: 8px;
+                    background: #111;
+                    color: white;
+                    padding: 8px 10px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-weight: 700;
+                }
+                .footer {
+                    text-align: center;
+                    font-size: 10px;
+                    margin-top: 12px;
+                    color: #222;
+                    line-height: 1.5;
+                }
+                .ticket-number {
+                    font-size: 11px;
+                    text-align: center;
+                    margin-top: 8px;
+                    font-weight: 700;
+                }
             </style>
         </head>
         <body>
-            <div class="text-center">
-                <h3 style="margin: 5px 0;">BARBERÍA / PELUQUERÍA</h3>
-                <p style="margin: 0;"><b>COMPROBANTE DE CITA</b></p>
-                <p style="margin: 4px 0 0 0;">Ticket N°: #00${datos.id}</p>
-            </div>
-            
-            <div class="linea"></div>
-            <p style="margin: 3px 0;"><b>Fecha:</b> ${datos.fecha}</p>
-            <p style="margin: 3px 0;"><b>Hora del Turno:</b> ${datos.hora}</p>
-            <p style="margin: 3px 0;"><b>Cliente:</b> ${datos.cliente}</p>
-            <p style="margin: 3px 0;"><b>Barbero:</b> ${datos.barbero}</p>
-            <div class="linea"></div>
+            <div class="ticket">
+                <div class="brand">
+                    <h1>CORTA CLIC</h1>
+                    <div class="sub">COMPROBANTE DE CITA</div>
+                </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th align="left">Servicio Solicitado</th>
-                        <th align="right">Precio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>${datos.servicio}</td>
-                        <td class="text-right">$${parseFloat(datos.precio).toFixed(2)}</td>
-                    </tr>
-                </tbody>
-            </table>
+                <div class="ticket-number">Ticket N° #00${datos.id}</div>
+                <div class="title">Servicio agendado</div>
 
-            <div class="linea"></div>
-            <table class="total">
-                <tr>
-                    <td>TOTAL A PAGAR:</td>
-                    <td class="text-right">$${parseFloat(datos.precio).toFixed(2)}</td>
-                </tr>
-            </table>
-            <div class="linea"></div>
+                <div class="info">
+                    <div class="info-row"><span class="label">Fecha</span><span class="value">${datos.fecha}</span></div>
+                    <div class="info-row"><span class="label">Hora</span><span class="value">${datos.hora}</span></div>
+                    <div class="info-row"><span class="label">Cliente</span><span class="value">${datos.cliente}</span></div>
+                    <div class="info-row"><span class="label">Barbero</span><span class="value">${datos.barbero}</span></div>
+                </div>
 
-            <div class="text-center" style="margin-top: 15px;">
-                <p style="margin: 0;">¡Le esperamos!</p>
-                <p style="margin: 3px 0 0 0; font-size: 10px;">Por favor llegue 5 minutos antes.</p>
+                <div class="divider"></div>
+
+                <div class="service-box">
+                    <div class="service-row">
+                        <span class="service-name">${datos.servicio}</span>
+                        <span>${formatearPrecio(precio)}</span>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="total-box">
+                    <div class="service-row">
+                        <span>TOTAL</span>
+                        <span>${formatearPrecio(precio)}</span>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <div>¡Gracias por preferirnos!</div>
+                    <div>Por favor llega 5 minutos antes.</div>
+                </div>
             </div>
         </body>
         </html>`;
 
-        await page.setContent(htmlContent);
-        
+        await page.setContent(htmlContent, { waitUntil: 'load' });
+
         return await page.pdf({
             width: '80mm',
-            height: '160mm',
+            height: '180mm',
             printBackground: true,
-            margin: { top: '0px', right: '0px', bottom: '0px', left: '0px' }
+            margin: { top: '0', right: '0', bottom: '0', left: '0' }
         });
     } finally {
         if (page) await page.close();

@@ -14,6 +14,7 @@ async function getHistorial(req, res) {
         c.fecha_hora,
         c.estado,
         c.barbero_id,
+        c.ticket_path,
         COALESCE(u.nombre, c.cliente_nombre) AS cliente_nombre,
         s.nombre  AS servicio_nombre,
         s.precio  AS servicio_precio,

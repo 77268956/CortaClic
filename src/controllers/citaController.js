@@ -1,6 +1,10 @@
+const path = require('path');
+const fs = require('fs');
 const Cita = require('../models/Cita');
 const Barbero = require('../models/Barbero');
 const Servicio = require('../models/Servicio');
+const Usuario = require('../models/Usuario');
+const { generarTicketBuffer } = require('../utils/pdfHelper');
 
 /**
  * Helper para obtener la fecha local en formato YYYY-MM-DD
@@ -290,19 +294,39 @@ exports.descargarTicket = async (req, res) => {
       return res.status(404).json({ ok: false, message: 'La cita especificada no existe.' });
     }
 
-    // 2. Traer la información complementaria (Servicio y Barbero)
-    const servicio = await Servicio.findById(cita.servicioId);
-    const barbero = await Barbero.findById(cita.barberoId);
+    const ticketsDir = path.join(__dirname, '..', 'public', 'tickets');
+    const fileName = `ticket_cita_${id}.pdf`;
+    const filePath = path.join(ticketsDir, fileName);
 
-    // Formatear la fecha y hora para mostrarla bonita en el ticket
-    const fechaHora = new Date(cita.fechaHora);
+    // 2. Si el archivo ya existe en disco, responderlo directamente
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+      return res.sendFile(filePath);
+    }
+
+    // 3. Si no existe en disco, generarlo
+    const servicioId = cita.servicioId ?? cita.servicio_id;
+    const barberoId = cita.barberoId ?? cita.barbero_id;
+    const fechaHoraValue = cita.fechaHora ?? cita.fecha_hora;
+
+    const servicio = servicioId ? await Servicio.findById(servicioId) : null;
+    const barbero = barberoId ? await Barbero.findById(barberoId) : null;
+
+    const fechaHora = new Date(fechaHoraValue);
     const fechaCita = fechaHora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const horaCita = fechaHora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-    // 3. Estructurar los datos limpios para el pdfHelper
+    let clienteNombre = cita.cliente_nombre || null;
+    if (!clienteNombre && cita.cliente_id) {
+      const clienteUser = await Usuario.findById(cita.cliente_id);
+      if (clienteUser) clienteNombre = clienteUser.nombre;
+    }
+    if (!clienteNombre) clienteNombre = req.user?.nombre || 'Cliente Peluquería';
+
     const datosTicket = {
       id: cita.id,
-      cliente: req.user?.nombre || 'Cliente Peluquería',
+      cliente: clienteNombre,
       barbero: barbero ? barbero.nombre : 'No asignado',
       servicio: servicio ? servicio.nombre : 'Servicio General',
       precio: servicio ? servicio.precio : 0,
@@ -310,13 +334,20 @@ exports.descargarTicket = async (req, res) => {
       hora: horaCita
     };
 
-    // 4. Generar el PDF en memoria llamando a tu utilitario
     const ticketBuffer = await generarTicketBuffer(datosTicket);
+
+    // 4. Guardar archivo en disco y guardar ruta en la BD
+    if (!fs.existsSync(ticketsDir)) {
+      fs.mkdirSync(ticketsDir, { recursive: true });
+    }
+    fs.writeFileSync(filePath, ticketBuffer);
+
+    const dbPath = `/tickets/${fileName}`;
+    await Cita.saveTicketPath(Number(id), dbPath);
 
     // 5. Configurar cabeceras y responder con el documento PDF
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=ticket_cita_${id}.pdf`);
-    
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
     return res.end(ticketBuffer);
 
   } catch (err) {

@@ -6,7 +6,8 @@ const {
   cancelarCita,
   descargarTicket 
 } = require('../controllers/citaController');
-const { authenticate } = require('../middlewares/auth');
+const { authenticate, authorize } = require('../middlewares/auth');
+const { updateCitaStatus } = require('../controllers/admin/adminCitasController');
 
 const router = Router();
 
@@ -17,8 +18,9 @@ router.get('/disponibilidad', getDisponibilidad);
 router.post('/', authenticate, crearCita);
 router.get('/mis-citas', authenticate, getMisCitas);
 router.patch('/:id/cancelar', authenticate, cancelarCita);
+router.patch('/:id/status', authenticate, authorize(0), updateCitaStatus);
 
-//  2. Nueva ruta protegida para renderizar y obtener el ticket PDF
+//  Nueva ruta protegida para renderizar y obtener el ticket PDF
 router.get('/:id/ticket', authenticate, descargarTicket);
 
 module.exports = router;

@@ -672,38 +672,122 @@
       $('#gestorCitaModal').modal('show');
     }
 
-    async function updateCitaStatus(estado) {
-      const id = document.getElementById('gestor-cita-id').value;
-      try {
-        const res = await fetch(`/api/admin/citas/${id}/estado`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${CC.getToken()}`
-          },
-          body: JSON.stringify({ estado })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          $('#gestorCitaModal').modal('hide');
-          loadAgenda();
-          loadCalendar();
-        } else {
-          Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'Error', background: 'var(--surface)', color: 'var(--text-1)' });
-        }
-      } catch (e) {
-        console.error('Error update cita:', e);
+    async function updateCitaStatus(nuevoEstado) {
+
+  // 1. Recuperamos el ID de la cita que el modal guardó en el input hidden
+
+  const citaId = document.getElementById('gestor-cita-id').value;
+
+  const token = CC.getToken(); // O el método que uses para recuperar tu token de autenticación
+
+  try {
+
+    // 2. Tu llamada FETCH actual que actualiza el estado en el backend
+
+    const res = await fetch(`/api/citas/${citaId}/status`, { // Ajusta la URL a tu ruta exacta de Express
+
+      method: 'PATCH', // o PUT según uses en tus rutas
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+        'Authorization': `Bearer ${token}`
+
+      },
+
+      body: JSON.stringify({ estado: nuevoEstado })
+
+    });
+
+
+
+    const data = await res.json();
+
+
+
+    if (data.ok) {
+
+      
+
+      // ========================================================
+
+      // 🔥 REGLA AUTOMÁTICA: SI PASA A COMPLETADA (3), IMPRIME
+
+      // ========================================================
+
+      if (nuevoEstado === 3) {
+
+        // Abrimos la pestaña en blanco inmediatamente para evitar bloqueos del navegador (Pop-ups)
+
+        const ventanaTicket = window.open('about:blank', '_blank');
+        const ticketUrl = `/api/citas/${citaId}/ticket?token=${encodeURIComponent(token)}`;
+
+        // Apuntamos al endpoint GET que creamos en Express
+
+        ventanaTicket.location.href = ticketUrl;
+
       }
+
+
+
+      // 3. Tu lógica actual para cerrar modal y refrescar la pantalla
+
+      $('#gestorCitaModal').modal('hide');
+
+      
+
+      // Llamas a tus funciones actuales para refrescar el dashboard
+
+      if (typeof loadCalendar === 'function') loadCalendar();
+
+      if (typeof loadAgenda === 'function') loadAgenda();
+
+
+
+      Swal.fire({
+
+        icon: 'success',
+
+        title: nuevoEstado === 3 ? '¡Servicio Completado!' : 'Estado Actualizado',
+
+        text: nuevoEstado === 3 ? 'El ticket ha sido generado correctamente.' : 'La cita ha cambiado de estado.',
+
+        timer: 2000,
+
+        showConfirmButton: false
+
+      });
+
+
+
+    } else {
+
+      Swal.fire('Error', data.message || 'No se pudo actualizar la cita', 'error');
+
     }
+
+  } catch (err) {
+
+    console.error('[updateCitaStatus]', err);
+
+    Swal.fire('Error', 'Error de red al actualizar la cita', 'error');
+
+  }
+
+} 
+
+
 
     /**
      * Abre el ticket de la cita completada en una nueva pestaña listo para imprimir
      * @param {number|string} id - ID de la cita finalizada
      */
     function abrirTicketCitaCompletada(id) {
-        // Usamos el método seguro para evitar que el navegador bloquee la ventana emergente
+        const token = CC.getToken();
+        const url = `/api/citas/${id}/ticket?token=${encodeURIComponent(token)}`;
         const nuevaVentana = window.open('about:blank', '_blank');
-        nuevaVentana.location.href = `/api/citas/${id}/ticket`;
+        nuevaVentana.location.href = url;
     }
 
   </script>
