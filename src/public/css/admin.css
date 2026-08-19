@@ -274,6 +274,12 @@
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table tbody tr:hover { background: var(--surface-h); }
 
+html[data-theme="light"] .admin-table td { border-bottom-color: var(--border); }
+
+@media (prefers-color-scheme: light) {
+  html[data-theme="auto"] .admin-table td { border-bottom-color: var(--border); }
+}
+
 /* ── Admin Historial Cards (mobile) ───────────────────── */
 .admin-hist-card {
   background: var(--surface);

@@ -128,6 +128,21 @@
       </div>
     </section>
 
+    <section class="profile-section mb-4">
+      <p class="section-title"><i class="fa fa-adjust mr-2" style="color:var(--accent)"></i>Apariencia</p>
+      <div class="theme-options" role="group" aria-label="Seleccionar apariencia">
+        <button type="button" class="theme-option" data-theme-option="light" onclick="CC.setTheme('light')" aria-pressed="false">
+          <i class="fa fa-sun-o"></i><span>Claro</span>
+        </button>
+        <button type="button" class="theme-option" data-theme-option="auto" onclick="CC.setTheme('auto')" aria-pressed="false">
+          <i class="fa fa-adjust"></i><span>Automático</span>
+        </button>
+        <button type="button" class="theme-option" data-theme-option="dark" onclick="CC.setTheme('dark')" aria-pressed="false">
+          <i class="fa fa-moon-o"></i><span>Oscuro</span>
+        </button>
+      </div>
+    </section>
+
     <!-- Divider -->
     <div class="divider-text">Cuenta</div>
 
@@ -153,6 +168,7 @@
     CC.requireAuth();
 
     document.addEventListener('DOMContentLoaded', () => {
+      CC.setTheme(CC.getTheme());
       const sessionUser = CC.getUser();
       if (!sessionUser) return;
 

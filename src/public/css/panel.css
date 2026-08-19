@@ -14,15 +14,14 @@ body.split-mode {
 .split-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px); /* minus bottom nav on mobile */
+  height: calc(100vh - var(--top-h) - var(--bot-nav));
   width: 100%;
   overflow: hidden;
   position: relative;
 }
 @media (min-width: 768px) {
   .split-container {
-    height: 100vh; /* No bottom nav on desktop */
-    padding-left: 240px; /* Assuming side nav on desktop, actually wait desktop-nav is top */
+    height: calc(100vh - var(--top-h));
   }
 }
 
@@ -74,6 +73,78 @@ body.split-mode {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+}
+
+html[data-theme="light"] .split-pane-top {
+  background: #e2e7ed;
+}
+
+html[data-theme="light"] .cal-header,
+html[data-theme="light"] .agenda-header {
+  background: rgba(243,239,232,.98);
+  box-shadow: 0 3px 14px rgba(71,85,105,.1);
+}
+
+html[data-theme="light"] .sched-wrapper {
+  background: #e2e7ed;
+}
+
+html[data-theme="light"] .sched-table th,
+html[data-theme="light"] .time-cell {
+  background: #d8dee6;
+}
+
+html[data-theme="light"] .data-cell:hover {
+  background: rgba(217,119,6,.08);
+}
+
+html[data-theme="light"] .event-block.estado-0 {
+  background: #fbbf24;
+  border-left-color: #b45309;
+  color: #3b1f00;
+}
+
+html[data-theme="light"] .event-block.estado-1 {
+  background: #34d399;
+  border-left-color: #047857;
+  color: #064e3b;
+}
+
+html[data-theme="light"] .event-block.estado-3 {
+  background: #60a5fa;
+  border-left-color: #1d4ed8;
+  color: #172554;
+  opacity: 1;
+}
+
+html[data-theme="light"] .agenda-item:hover,
+html[data-theme="light"] .data-cell:hover {
+  background: rgba(217,119,6,.1);
+}
+
+html[data-theme="light"] .event-block.estado-2 {
+  background: #fca5a5;
+  border-left-color: #b91c1c;
+  color: #450a0a;
+}
+
+@media (prefers-color-scheme: light) {
+  html[data-theme="auto"] .split-pane-top { background: #e2e7ed; }
+  html[data-theme="auto"] .cal-header,
+  html[data-theme="auto"] .agenda-header {
+    background: rgba(243,239,232,.98);
+    box-shadow: 0 3px 14px rgba(71,85,105,.1);
+  }
+  html[data-theme="auto"] .sched-wrapper { background: #e2e7ed; }
+  html[data-theme="auto"] .sched-table th,
+  html[data-theme="auto"] .time-cell { background: #d8dee6; }
+  html[data-theme="auto"] .data-cell:hover { background: rgba(217,119,6,.08); }
+  html[data-theme="auto"] .event-block.estado-0 { background: #fbbf24; border-left-color: #b45309; color: #3b1f00; }
+  html[data-theme="auto"] .event-block.estado-1 { background: #34d399; border-left-color: #047857; color: #064e3b; }
+  html[data-theme="auto"] .event-block.estado-3 { background: #60a5fa; border-left-color: #1d4ed8; color: #172554; opacity: 1; }
+  html[data-theme="auto"] .agenda-item:hover,
+  html[data-theme="auto"] .data-cell:hover { background: rgba(217,119,6,.1); }
+  html[data-theme="auto"] .event-block.estado-2 { background: #fca5a5; border-left-color: #b91c1c; color: #450a0a; }
 }
 .cal-title-row {
   display: flex;

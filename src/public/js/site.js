@@ -4,6 +4,26 @@
 
 const CC = (() => {
   const SESSION_KEY = 'cc_session';
+  const THEME_KEY = 'cc_theme';
+
+  /* ── Theme ───────────────────────────────────────── */
+  function getTheme() {
+    const theme = localStorage.getItem(THEME_KEY);
+    return ['light', 'dark', 'auto'].includes(theme) ? theme : 'dark';
+  }
+
+  function setTheme(theme) {
+    if (!['light', 'dark', 'auto'].includes(theme)) return;
+    localStorage.setItem(THEME_KEY, theme);
+    document.documentElement.dataset.theme = theme;
+    document.querySelectorAll('[data-theme-option]').forEach((option) => {
+      const selected = option.dataset.themeOption === theme;
+      option.classList.toggle('active', selected);
+      option.setAttribute('aria-pressed', String(selected));
+    });
+  }
+
+  document.documentElement.dataset.theme = getTheme();
 
   /* ── Session ─────────────────────────────────────── */
   function getSession() {
@@ -305,6 +325,7 @@ const CC = (() => {
     isLoggedIn, getUser, getToken,
     requireAuth, redirectIfLoggedIn,
     renderNav, logout, toggleMoreMenu,
+    getTheme, setTheme,
     apiLogin, apiRegister,
     showAlert, hideAlert, setLoading,
   };
