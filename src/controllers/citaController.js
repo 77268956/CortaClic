@@ -69,34 +69,51 @@ exports.getDisponibilidad = async (req, res) => {
       return res.status(400).json({ ok: false, message: 'No hay barberos registrados en el sistema.' });
     }
 
-    // Generar slots de horario (09:00 a 18:30)
-    const startHour = 9;  // 09:00 AM
-    const endHour   = 19; // 07:00 PM
+    const isToday = (fecha === todayStr);
+    // Obtener el día de la semana sin que la zona horaria desplace la fecha.
+    const jsDay = new Date(`${fecha}T00:00:00`).getDay(); // 0=Sun
+    const dbDay = jsDay === 0 ? 7 : jsDay; // convierte a 1..7
+
+    const daySchedules = [];
+    for (const b of listBarberos) {
+      const horarios = barberoHorariosMap[b.id] || [];
+      for (const horario of horarios) {
+        if (Number(horario.dia_semana) === dbDay) {
+          daySchedules.push(horario);
+        }
+      }
+    }
+
+    if (daySchedules.length > 0) {
+      allowedDaysSet.add(dbDay);
+    }
+
+    // Generar solo inicios de cita que caben dentro del horario real.
+    const slotStarts = new Set();
+    for (const horario of daySchedules) {
+      const [hStart, mStart] = String(horario.hora_inicio).split(':').map(Number);
+      const [hEnd, mEnd] = String(horario.hora_fin).split(':').map(Number);
+      const startMin = hStart * 60 + mStart;
+      const endMin = hEnd * 60 + mEnd;
+
+      for (let slotMin = startMin; slotMin + duracion <= endMin; slotMin += 30) {
+        slotStarts.add(slotMin);
+      }
+    }
+
     const slots = [];
 
-    const isToday = (fecha === todayStr);
-
-    for (let h = startHour; h < endHour; h++) {
-      for (let m of [0, 30]) {
+    for (const slotMin of Array.from(slotStarts).sort((a, b) => a - b)) {
+        const h = Math.floor(slotMin / 60);
+        const m = slotMin % 60;
         const horaStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
         const slotDateTimeStr = `${fecha} ${horaStr}:00`;
 
         // REGLA: Si la fecha es HOY, descartar completamente cualquier hora que ya haya transcurrido
         let slotIsPast = false;
         if (isToday) {
-          if (h < currentHour || (h === currentHour && m <= currentMin)) {
+          if (h < currentHour || (h === currentHour && m < currentMin)) {
             slotIsPast = true;
-          }
-        }
-
-        // Determinar día de la semana en formato DB (1=Mon ..7=Sun)
-        const jsDay = new Date(slotDateTimeStr).getDay(); // 0=Sun
-        const dbDay = jsDay === 0 ? 7 : jsDay; // convierte a 1..7
-        // Añadir día al conjunto de días permitidos (solo si hay algún horario en la DB)
-        for (const b of listBarberos) {
-          const horarios = barberoHorariosMap[b.id] || [];
-          if (horarios.some(hor => hor.dia_semana === dbDay)) {
-            allowedDaysSet.add(dbDay);
           }
         }
 
@@ -111,9 +128,9 @@ exports.getDisponibilidad = async (req, res) => {
             // Verificar si este barbero trabaja en este día y hora
             let worksNow = false;
             for (const hor of horarios) {
-              if (hor.dia_semana !== dbDay) continue;
-              const [hStart, mStart] = hor.hora_inicio.split(':').map(Number);
-              const [hEnd, mEnd] = hor.hora_fin.split(':').map(Number);
+              if (Number(hor.dia_semana) !== dbDay) continue;
+              const [hStart, mStart] = String(hor.hora_inicio).split(':').map(Number);
+              const [hEnd, mEnd] = String(hor.hora_fin).split(':').map(Number);
               const startMin = hStart * 60 + mStart;
               const endMin = hEnd * 60 + mEnd;
               const slotMin = h * 60 + m;
@@ -138,7 +155,6 @@ exports.getDisponibilidad = async (req, res) => {
           disponible: isAvailable,
           barberoId: assignedBarberId
         });
-      }
     }
 
     // Convertir el set a array para enviarlo al cliente
@@ -187,7 +203,7 @@ exports.crearCita = async (req, res) => {
       const h = parseInt(hStr, 10);
       const m = parseInt(mStr, 10);
 
-      if (h < currentHour || (h === currentHour && m <= currentMin)) {
+      if (h < currentHour || (h === currentHour && m < currentMin)) {
         return res.status(400).json({ ok: false, message: 'El horario seleccionado ya ha transcurrido.' });
       }
     }

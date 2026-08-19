@@ -311,9 +311,16 @@
       }
     }
 
+    function formatLocalDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
     function setupDateRangeForBarber(barberId, cardEl, horarios) {
       const today = new Date();
-      const todayStr = today.toISOString().split('T')[0];
+      const todayStr = formatLocalDate(today);
       
       const customDateEl = cardEl.querySelector('.custom-date-input');
       customDateEl.min = todayStr;
@@ -341,7 +348,7 @@
       workingDays.forEach(dbDay => {
         const d = new Date(mondayDate);
         d.setDate(mondayDate.getDate() + (dbDay - 1));
-        const dStr = d.toISOString().split('T')[0];
+        const dStr = formatLocalDate(d);
 
         const pill = document.createElement('span');
         pill.className = `day-pill`;
@@ -461,7 +468,7 @@
           document.getElementById('res-datetime').textContent    = `${data.cita.fecha} · ${data.cita.hora} hs`;
           document.getElementById('res-total').textContent       = formatDollars(data.cita.servicioPrecio);
 
-          const waMessage = `Hola CortaClic! Confirmación de mi cita:\n✂️ Servicio: ${data.cita.servicioNombre}\n👨‍🦱 Barbero: ${data.cita.barberoNombre}\n📅 Fecha: ${data.cita.fecha}\n⏰ Hora: ${data.cita.hora} hs\n💵 Total: ${formatDollars(data.cita.servicioPrecio)}`;
+          const waMessage = `Hola CortaClic! Confirmación de mi cita:\n Servicio: ${data.cita.servicioNombre}\n Barbero: ${data.cita.barberoNombre}\n📅 Fecha: ${data.cita.fecha}\n Hora: ${data.cita.hora} hs\n Total: ${formatDollars(data.cita.servicioPrecio)}`;
           document.getElementById('btn-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(waMessage)}`;
 
           $('#successModal').modal('show');

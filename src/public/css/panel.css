@@ -184,6 +184,25 @@ html[data-theme="light"] .event-block.estado-2 {
   padding-bottom: 4px;
 }
 .cal-toolbar::-webkit-scrollbar { display: none; }
+.schedule-zoom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.schedule-zoom .icon-btn-sm {
+  width: 28px;
+  height: 28px;
+  font-size: .7rem;
+}
+.schedule-zoom span {
+  min-width: 42px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: .72rem;
+  font-weight: 700;
+}
 .cal-tab {
   background: var(--surface-h);
   border: 1px solid var(--border);
@@ -275,7 +294,7 @@ html[data-theme="light"] .event-block.estado-2 {
 }
 
 .data-cell {
-  height: 60px; /* 1 hour height */
+  height: calc(60px * var(--schedule-zoom, 1));
   position: relative;
   background: var(--bg);
 }
@@ -335,6 +354,21 @@ html[data-theme="light"] .event-block.estado-2 {
   background: #EF4444;
   z-index: 15;
   pointer-events: none;
+}
+.now-line::before {
+  content: attr(data-time);
+  position: absolute;
+  left: 6px;
+  top: -11px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: #EF4444;
+  color: #fff;
+  font-size: .62rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  z-index: 16;
 }
 .now-dot {
   position: absolute;

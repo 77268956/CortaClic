@@ -41,6 +41,19 @@
           <select id="barber-filter" class="cc-input" style="padding: 2px 8px; font-size: .8rem; height: auto; min-width: 120px;" onchange="loadCalendar()">
             <option value="all">Todos los barberos</option>
           </select>
+
+          <div class="schedule-zoom" role="group" aria-label="Zoom de la agenda">
+            <button class="icon-btn-sm" type="button" onclick="changeScheduleZoom(-1)" aria-label="Alejar agenda" title="Alejar">
+              <i class="fa fa-minus"></i>
+            </button>
+            <span id="schedule-zoom-label" aria-live="polite">100%</span>
+            <button class="icon-btn-sm" type="button" onclick="changeScheduleZoom(1)" aria-label="Acercar agenda" title="Acercar">
+              <i class="fa fa-plus"></i>
+            </button>
+            <button class="icon-btn-sm" type="button" onclick="resetScheduleZoom()" aria-label="Restablecer zoom" title="Restablecer zoom">
+              <i class="fa fa-arrows-alt"></i>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -186,6 +199,8 @@
     let citasData = []; // Raw citas from API for Calendar
     let agendaData = []; // Raw citas from API for Agenda
     let currentAgendaFilter = 'activas';
+    let scheduleZoom = 1;
+    const scheduleZoomSteps = [0.75, 1, 1.25, 1.5, 2];
 
     document.addEventListener('DOMContentLoaded', async () => {
       // Fix specific heights for mobile Safari
@@ -205,6 +220,7 @@
       // Initial renders
       setCalMode('week'); // triggers loadCalendar
       loadAgenda();
+      setInterval(buildNowLine, 60000);
 
       // Walkin event listeners
       document.getElementById('walkin-barbero').addEventListener('change', loadWalkinAvailability);
@@ -253,6 +269,24 @@
       document.getElementById('cal-title-text').textContent = title;
       
       loadCalendar();
+    }
+
+    function changeScheduleZoom(direction) {
+      const currentIndex = scheduleZoomSteps.indexOf(scheduleZoom);
+      const nextIndex = Math.max(0, Math.min(scheduleZoomSteps.length - 1, currentIndex + direction));
+      scheduleZoom = scheduleZoomSteps[nextIndex];
+      applyScheduleZoom();
+    }
+
+    function resetScheduleZoom() {
+      scheduleZoom = 1;
+      applyScheduleZoom();
+    }
+
+    function applyScheduleZoom() {
+      const wrapper = document.getElementById('sched-scroll');
+      wrapper.style.setProperty('--schedule-zoom', scheduleZoom);
+      document.getElementById('schedule-zoom-label').textContent = `${Math.round(scheduleZoom * 100)}%`;
     }
 
     function getStartOfWeek(date) {
@@ -374,6 +408,7 @@
       }
 
       tbody.innerHTML = rowsHtml;
+      applyScheduleZoom();
       
       // Plot Citas
       plotCitas();
@@ -413,13 +448,11 @@
           const c = evData.cita;
           const topPct = (evData.m / 60) * 100;
           // Approx 1hr duration (60px)
-          const height = 55; 
           const leftPct = widthPct * idx;
           
           const ev = document.createElement('div');
           ev.className = `event-block estado-${c.estado}`;
           ev.style.top = `${topPct}%`;
-          ev.style.height = `${height}px`;
           ev.style.width = `calc(${widthPct}% - 4px)`;
           ev.style.left = `calc(${leftPct}% + 2px)`;
           
@@ -442,22 +475,29 @@
       const now = new Date();
       const h = now.getHours();
       const m = now.getMinutes();
-      
+
+      document.querySelectorAll('.now-line').forEach(line => line.remove());
+      const viewingToday = calMode === 'week'
+        ? true
+        : currentDate.toDateString() === now.toDateString();
+      if (!viewingToday) return;
+
+      const visibleHour = Math.max(7, Math.min(21, h));
+      const row = document.querySelector(`#cal-tbody tr[data-hour="${visibleHour}"]`);
+      if (!row) return;
+
+      const line = document.createElement('div');
+      line.className = 'now-line';
+      line.dataset.time = `Ahora ${now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+      const position = h < 7 ? 0 : h > 21 ? 100 : (m / 60) * 100;
+      line.style.top = `${position}%`;
+      line.innerHTML = '<div class="now-dot"></div>';
+
       if (calMode === 'week') {
-        const rows = document.querySelectorAll('#cal-tbody tr');
-        rows.forEach(row => {
-          if (parseInt(row.getAttribute('data-hour')) === h) {
-            const pct = (m / 60) * 100;
-            const line = document.createElement('div');
-            line.className = 'now-line';
-            line.style.top = `${pct}%`;
-            line.innerHTML = '<div class="now-dot"></div>';
-            
-            // Append to today's cell
-            const todayCell = row.querySelector('.today-col');
-            if(todayCell) todayCell.appendChild(line);
-          }
-        });
+        const todayCell = row.querySelector('.today-col');
+        if (todayCell) todayCell.appendChild(line);
+      } else {
+        row.querySelectorAll('.data-cell').forEach(cell => cell.appendChild(line.cloneNode(true)));
       }
     }
 
