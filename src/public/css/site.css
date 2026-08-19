@@ -237,6 +237,49 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.05em;
 }
 
+.bottom-nav__more-button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bottom-nav-more-menu {
+  position: fixed;
+  right: 10px;
+  bottom: calc(var(--bot-nav) + 8px);
+  z-index: 1001;
+  display: none;
+  min-width: 190px;
+  padding: 6px;
+  background: rgba(17,24,39,.98);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+
+.bottom-nav-more-menu.is-open { display: block; animation: fade-up .16s ease-out; }
+
+.bottom-nav-more-menu a,
+.bottom-nav-more-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-2);
+  font: 600 .82rem 'Outfit', sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.bottom-nav-more-menu a:hover,
+.bottom-nav-more-menu button:hover { background: var(--surface-h); color: var(--text); }
+.bottom-nav-more-menu i { width: 18px; color: var(--accent); text-align: center; }
+
 /* ── Page Container ────────────────────────────────────────── */
 .page-container {
   padding: 16px;
@@ -1090,6 +1133,77 @@ select.cc-input option {
 
 .info-row__label i { color: var(--accent); font-size: .95rem; }
 .info-row__value { font-size: .9rem; color: var(--text); }
+
+.profile-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-action {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 15px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text);
+  transition: background .2s, border-color .2s, transform .15s;
+}
+
+.profile-action:hover {
+  background: var(--surface-h);
+  border-color: var(--border-a);
+  transform: translateY(-1px);
+}
+
+.profile-action > i:first-child {
+  flex: 0 0 22px;
+  color: var(--accent);
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.profile-action span {
+  min-width: 0;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+.profile-action small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-3);
+  font-family: 'Inter', sans-serif;
+  font-size: .7rem;
+  font-weight: 400;
+}
+
+.profile-action__arrow { margin-left: auto; color: var(--text-3); font-size: .75rem; }
+.profile-action--primary { border-color: var(--border-a); background: var(--accent-glow); }
+
+.profile-client-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.profile-client-links .btn-ghost { flex: 1 1 140px; padding: 12px 14px; text-align: center; }
+
+@media (max-width: 767px) {
+  .page-container { padding: 10px 12px 22px; }
+  .profile-hero { padding: 20px 4px 16px; margin-bottom: 14px; }
+  .profile-avatar { width: 72px; height: 72px; font-size: 1.7rem; margin-bottom: 10px; }
+  .profile-name { max-width: 100%; font-size: 1.25rem; overflow-wrap: anywhere; }
+  .profile-email { max-width: 100%; overflow-wrap: anywhere; }
+  .profile-role-badge { max-width: 100%; }
+  .info-card { border-radius: var(--r-md); }
+  .info-row { align-items: flex-start; gap: 12px; padding: 13px 14px; }
+  .info-row__label { flex: 0 0 42%; font-size: .7rem; }
+  .info-row__value { min-width: 0; max-width: 58%; text-align: right; overflow-wrap: anywhere; font-size: .82rem; }
+  .profile-actions-grid { grid-template-columns: 1fr; gap: 8px; }
+  .profile-action { min-height: 64px; }
+  .profile-client-links { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .profile-client-links .btn-ghost { width: 100%; }
+}
 
 /* ── Gradient Presets (card backgrounds) ───────────────────── */
 .g1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }

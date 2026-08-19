@@ -69,7 +69,7 @@ async function create({ nombre, email, telefono, hashedPassword }) {
 
 async function findById(id) {
   const [rows] = await pool.execute(
-    'SELECT * FROM usuarios WHERE id = ? AND deleted_at IS NULL LIMIT 1',
+    'SELECT id, nombre, email, telefono, rol, creado_en FROM usuarios WHERE id = ? AND deleted_at IS NULL LIMIT 1',
     [id]
   );
   return rows.length > 0 ? rows[0] : null;

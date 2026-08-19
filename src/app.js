@@ -60,6 +60,10 @@ adminPages.forEach(({ route, file }) => {
   });
 });
 
+app.get('/admin/perfil', (_req, res) => {
+  res.sendFile('perfil.html', { root: clienteDir });
+});
+
 // ── API ─────────────────────────────────────────────────────────
 app.use('/api/test',      testRoutes);
 app.use('/api/auth',      authRoutes);

@@ -301,7 +301,7 @@ exports.descargarTicket = async (req, res) => {
     // 2. Si el archivo ya existe en disco, responderlo directamente
     if (fs.existsSync(filePath)) {
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+      res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
       return res.sendFile(filePath);
     }
 
@@ -347,7 +347,7 @@ exports.descargarTicket = async (req, res) => {
 
     // 5. Configurar cabeceras y responder con el documento PDF
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Disposition', `inline; filename=${fileName}`);
     return res.end(ticketBuffer);
 
   } catch (err) {

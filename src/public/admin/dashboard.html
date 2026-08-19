@@ -710,27 +710,6 @@
 
       
 
-      // ========================================================
-
-      // 🔥 REGLA AUTOMÁTICA: SI PASA A COMPLETADA (3), IMPRIME
-
-      // ========================================================
-
-      if (nuevoEstado === 3) {
-
-        // Abrimos la pestaña en blanco inmediatamente para evitar bloqueos del navegador (Pop-ups)
-
-        const ventanaTicket = window.open('about:blank', '_blank');
-        const ticketUrl = `/api/citas/${citaId}/ticket?token=${encodeURIComponent(token)}`;
-
-        // Apuntamos al endpoint GET que creamos en Express
-
-        ventanaTicket.location.href = ticketUrl;
-
-      }
-
-
-
       // 3. Tu lógica actual para cerrar modal y refrescar la pantalla
 
       $('#gestorCitaModal').modal('hide');
@@ -776,19 +755,6 @@
   }
 
 } 
-
-
-
-    /**
-     * Abre el ticket de la cita completada en una nueva pestaña listo para imprimir
-     * @param {number|string} id - ID de la cita finalizada
-     */
-    function abrirTicketCitaCompletada(id) {
-        const token = CC.getToken();
-        const url = `/api/citas/${id}/ticket?token=${encodeURIComponent(token)}`;
-        const nuevaVentana = window.open('about:blank', '_blank');
-        nuevaVentana.location.href = url;
-    }
 
   </script>
 </body>

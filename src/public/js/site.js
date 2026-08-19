@@ -93,6 +93,7 @@ const CC = (() => {
                   <li class="nav-item"><a class="nav-link ${path==='/admin/servicios'?'active':''}" href="/admin/servicios">Servicios</a></li>
                   <li class="nav-item"><a class="nav-link ${path==='/admin/productos'?'active':''}" href="/admin/productos">Productos</a></li>
                   <li class="nav-item"><a class="nav-link ${path==='/admin/historial'?'active':''}" href="/admin/historial">Historial</a></li>
+                  <li class="nav-item"><a class="nav-link ${path==='/admin/perfil'?'active':''}" href="/admin/perfil"><i class="fa fa-user mr-1"></i>Perfil</a></li>
                 </ul>
                 <ul class="navbar-nav">
                   <li class="nav-item">
@@ -174,9 +175,15 @@ const CC = (() => {
           <a href="/admin/productos" class="bottom-nav__item ${path==='/admin/productos'?'active':''}">
             <i class="fa fa-archive"></i><span>Productos</span>
           </a>
-          <a href="/admin/historial" class="bottom-nav__item ${path==='/admin/historial'?'active':''}">
-            <i class="fa fa-clock-history"></i><span>Historial</span>
-          </a>`;
+          <button type="button" class="bottom-nav__item bottom-nav__more-button" onclick="CC.toggleMoreMenu(event)" aria-label="Más opciones" aria-expanded="false">
+            <i class="fa fa-ellipsis-h"></i><span>Más</span>
+          </button>
+          <div class="bottom-nav-more-menu" id="bottom-nav-more-menu" role="menu">
+            <a href="/admin/historial" role="menuitem"><i class="fa fa-clock-o"></i>Historial</a>
+            <a href="/admin/perfil" role="menuitem"><i class="fa fa-user"></i>Perfil</a>
+            <a href="/servicios" role="menuitem"><i class="fa fa-eye"></i>Vista de cliente</a>
+            <button type="button" onclick="CC.logout()" role="menuitem"><i class="fa fa-sign-out"></i>Salir</button>
+          </div>`;
       } else {
         const profileItem = user
           ? `<a href="/perfil" class="bottom-nav__item ${path==='/perfil'?'active':''}">
@@ -206,6 +213,24 @@ const CC = (() => {
     clearSession();
     window.location.href = '/';
   }
+
+  function toggleMoreMenu(event) {
+    event.stopPropagation();
+    const menu = document.getElementById('bottom-nav-more-menu');
+    const button = event.currentTarget;
+    if (!menu) return;
+
+    const isOpen = menu.classList.toggle('is-open');
+    button.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  document.addEventListener('click', (event) => {
+    const menu = document.getElementById('bottom-nav-more-menu');
+    if (!menu || !menu.classList.contains('is-open') || menu.contains(event.target)) return;
+    menu.classList.remove('is-open');
+    const button = document.querySelector('.bottom-nav__more-button');
+    if (button) button.setAttribute('aria-expanded', 'false');
+  });
 
   /* ── API helpers ─────────────────────────────────── */
   async function apiLogin(email, password) {
@@ -279,7 +304,7 @@ const CC = (() => {
     getSession, saveSession, clearSession,
     isLoggedIn, getUser, getToken,
     requireAuth, redirectIfLoggedIn,
-    renderNav, logout,
+    renderNav, logout, toggleMoreMenu,
     apiLogin, apiRegister,
     showAlert, hideAlert, setLoading,
   };
