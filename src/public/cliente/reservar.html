@@ -68,6 +68,39 @@
     .day-pill:hover { border-color: var(--accent); color: var(--accent); }
     .day-pill.selected { background: var(--accent); border-color: var(--accent); color: #1a1000; }
     .day-pill.disabled { opacity: .4; cursor: not-allowed; }
+
+    .booking-success-modal .modal-body { padding: 32px 24px !important; }
+    .booking-success-modal .booking-summary { overflow: hidden; }
+    .booking-success-modal .booking-summary .info-row__value {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+
+    @media (max-width: 575px) {
+      .booking-success-modal { padding: 0 8px; }
+      .booking-success-modal .modal-dialog { margin: 12px auto; }
+      .booking-success-modal .modal-content { border-radius: var(--r-lg) !important; }
+      .booking-success-modal .modal-body { padding: 24px 16px !important; }
+      .booking-success-modal .modal-title { font-size: 1.45rem; }
+      .booking-success-modal .booking-summary .info-row {
+        align-items: flex-start;
+        gap: 8px;
+        padding: 11px 12px !important;
+      }
+      .booking-success-modal .booking-summary .info-row__label {
+        flex: 0 0 40%;
+        font-size: .68rem;
+      }
+      .booking-success-modal .booking-summary .info-row__value {
+        max-width: 60%;
+        font-size: .78rem;
+      }
+      .booking-success-modal .modal-action {
+        min-height: 46px;
+        padding: 11px 12px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -106,7 +139,7 @@
     <!-- Alert Box -->
     <div class="cc-alert mb-3" id="booking-alert"></div>
 
-    <!-- Card 1: Barbero (Ahora incluye fechas y horas) -->
+    <!-- Card: Barbero (Ahora incluye fechas y horas) -->
     <div class="mb-3">
         <div id="barber-schedules"></div>
     </div>
@@ -121,17 +154,17 @@
   <nav id="bottom-nav" class="bottom-nav d-md-none"></nav>
 
   <!-- Success Modal -->
-  <div class="modal fade" id="successModal" tabindex="-1" data-backdrop="static">
+  <div class="modal fade booking-success-modal" id="successModal" tabindex="-1" data-backdrop="static" aria-labelledby="successModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-center">
         <div class="modal-body" style="padding:32px 24px;">
-          <div style="font-size:3.5rem; margin-bottom:12px;">✅</div>
-          <h2 class="modal-title mb-2">¡Cita Agendada!</h2>
+          <div style="font-size:3.5rem; margin-bottom:12px;"><i class="fa fa-check-circle"></i></div>
+          <h2 class="modal-title mb-2" id="successModalTitle">¡Cita Agendada!</h2>
           <p style="color:var(--text-2); font-size:.88rem; margin-bottom:16px;">
             Tu reserva fue registrada con éxito en el sistema.
           </p>
 
-          <div class="info-card text-left mb-3" style="background:var(--surface-s); font-size:.85rem;">
+          <div class="info-card booking-summary text-left mb-3" style="background:var(--surface-s); font-size:.85rem;">
             <div class="info-row" style="padding:10px 14px;">
               <span class="info-row__label"><i class="fa fa-scissors"></i> Servicio</span>
               <span class="info-row__value" id="res-service-name">—</span>
@@ -150,17 +183,18 @@
             </div>
           </div>
 
-          <a id="btn-whatsapp" href="#" target="_blank" class="btn-outline-a w-100 mb-2" style="justify-content:center; padding:10px; font-size:.85rem;">
+          <a id="btn-whatsapp" href="#" target="_blank" rel="noopener" class="btn-outline-a modal-action w-100 mb-2" style="justify-content:center; padding:10px; font-size:.85rem;">
             <i class="fa fa-whatsapp"></i> Recordatorio por WhatsApp
           </a>
 
-          <a href="/mis-citas" class="btn-accent w-100" style="justify-content:center;">
+          <a href="/mis-citas" class="btn-accent modal-action w-100" style="justify-content:center;">
             <i class="fa fa-calendar-check-o"></i> Ver Mis Citas
           </a>
         </div>
       </div>
     </div>
   </div>
+
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -345,35 +379,35 @@
 
       let firstValidDateStr = null;
 
-      workingDays.forEach(dbDay => {
-        const d = new Date(mondayDate);
-        d.setDate(mondayDate.getDate() + (dbDay - 1));
-        const dStr = formatLocalDate(d);
+        workingDays.forEach(dbDay => {
+          const d = new Date(mondayDate);
+          d.setDate(mondayDate.getDate() + (dbDay - 1));
+          const dStr = formatLocalDate(d);
 
-        const pill = document.createElement('span');
-        pill.className = `day-pill`;
-        
-        if (dStr < todayStr) {
-          pill.classList.add('disabled');
-        } else if (!firstValidDateStr) {
-          firstValidDateStr = dStr;
-          pill.classList.add('selected');
-        }
-        
-        pill.dataset.date = dStr;
-        pill.textContent = dayNamesDb[dbDay];
-        
-        pill.addEventListener('click', () => {
-          if (pill.classList.contains('disabled')) return;
-          cardEl.querySelectorAll('.day-pill').forEach(p => p.classList.remove('selected'));
-          pill.classList.add('selected');
-          customDateEl.value = dStr;
-          barberDates[barberId] = dStr;
-          fetchBarberAvailability(barberId, cardEl);
+          const pill = document.createElement('span');
+          pill.className = `day-pill`;
+          
+          if (dStr < todayStr) {
+            pill.classList.add('disabled');
+          } else if (!firstValidDateStr) {
+            firstValidDateStr = dStr;
+            pill.classList.add('selected');
+          }
+          
+          pill.dataset.date = dStr;
+          pill.textContent = dayNamesDb[dbDay];
+          
+          pill.addEventListener('click', () => {
+            if (pill.classList.contains('disabled')) return;
+            cardEl.querySelectorAll('.day-pill').forEach(p => p.classList.remove('selected'));
+            pill.classList.add('selected');
+            customDateEl.value = dStr;
+            barberDates[barberId] = dStr;
+            fetchBarberAvailability(barberId, cardEl);
+          });
+
+          pillsContainer.appendChild(pill);
         });
-
-        pillsContainer.appendChild(pill);
-      });
 
       const defaultDate = firstValidDateStr || todayStr;
       customDateEl.value = defaultDate;
@@ -468,7 +502,7 @@
           document.getElementById('res-datetime').textContent    = `${data.cita.fecha} · ${data.cita.hora} hs`;
           document.getElementById('res-total').textContent       = formatDollars(data.cita.servicioPrecio);
 
-          const waMessage = `Hola CortaClic! Confirmación de mi cita:\n Servicio: ${data.cita.servicioNombre}\n Barbero: ${data.cita.barberoNombre}\n📅 Fecha: ${data.cita.fecha}\n Hora: ${data.cita.hora} hs\n Total: ${formatDollars(data.cita.servicioPrecio)}`;
+          const waMessage = `Hola CortaClic! Confirmación de mi cita:\n Servicio: ${data.cita.servicioNombre}\n Barbero: ${data.cita.barberoNombre}\n Fecha: ${data.cita.fecha}\n Hora: ${data.cita.hora} hs\n Total: ${formatDollars(data.cita.servicioPrecio)}`;
           document.getElementById('btn-whatsapp').href = `https://wa.me/?text=${encodeURIComponent(waMessage)}`;
 
           $('#successModal').modal('show');
