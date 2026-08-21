@@ -1,4 +1,6 @@
-const puppeteer = require('puppeteer');
+//const puppeteer = require('puppeteer');
+
+const puppeteer = await import('puppeteer').then(module => module.default);
 
 let browserInstance = null;
 
