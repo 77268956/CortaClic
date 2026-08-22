@@ -1,10 +1,15 @@
-//const puppeteer = require('puppeteer');
-
-const puppeteer = await import('puppeteer').then(module => module.default);
-
+let puppeteer = null;
 let browserInstance = null;
 
 async function getBrowser() {
+    if (!puppeteer) {
+        try {
+            puppeteer = require('puppeteer');
+        } catch (e) {
+            const mod = await import('puppeteer');
+            puppeteer = mod.default || mod;
+        }
+    }
     if (!browserInstance) {
         browserInstance = await puppeteer.launch({
             headless: true,
